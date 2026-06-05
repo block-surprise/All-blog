@@ -1,0 +1,32 @@
+name: AI Blog Generator
+
+on:
+  schedule:
+    - cron: "0 3 * * *"  # 毎日12時（日本時間）
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Setup Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.10"
+
+      - name: Install dependencies
+        run: pip install openai requests
+
+      - name: Run generator
+        run: python generate.py
+
+      - name: Commit and push
+        run: |
+          git config user.name "ai-bot"
+          git config user.email "bot@example.com"
+          git add .
+          git commit -m "auto post" || exit 0
+          git push
