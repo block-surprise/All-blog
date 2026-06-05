@@ -2,7 +2,7 @@ name: AI Blog Generator
 
 on:
   schedule:
-    - cron: "0 3 * * *"  # 毎日12時（日本時間）
+    - cron: "0 3 * * *"  # 毎日12時（UTC 3時）
   workflow_dispatch:
 
 jobs:
@@ -10,19 +10,27 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v3
+      # ① リポジトリ取得
+      - name: Checkout repo
+        uses: actions/checkout@v3
 
+      # ② Pythonセットアップ
       - name: Setup Python
         uses: actions/setup-python@v4
         with:
           python-version: "3.10"
 
+      # ③ 必要ライブラリインストール（ここ重要）
       - name: Install dependencies
-        run: pip install openai requests
+        run: pip install google-generativeai
 
+      # ④ APIキーを環境変数として渡す
       - name: Run generator
+        env:
+          GOOGLE_API_KEY: ${{ secrets.GOOGLE_API_KEY }}
         run: python generate.py
 
+      # ⑤ 自動コミット
       - name: Commit and push
         run: |
           git config user.name "ai-bot"
