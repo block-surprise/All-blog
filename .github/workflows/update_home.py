@@ -9,8 +9,10 @@ for root, dirs, files in os.walk(POST_DIR):
     for f in files:
         if f.endswith(".html"):
             path = os.path.join(root, f).replace("\\", "/")
+
             title = f.replace(".html", "")
 
+            # カテゴリ判定
             if "/ai/" in path:
                 cat = "AI"
                 color = "#4f46e5"
@@ -21,15 +23,21 @@ for root, dirs, files in os.walk(POST_DIR):
                 cat = "ニュース"
                 color = "#dc2626"
 
+            # ファイル更新時間（重要）
+            ts = os.path.getmtime(os.path.join(root, f))
+            time = datetime.fromtimestamp(ts).strftime("%m-%d %H:%M")
+
             articles.append({
                 "title": title,
                 "path": path,
                 "cat": cat,
                 "color": color,
-                "time": datetime.now().strftime("%m-%d")
+                "time": time,
+                "ts": ts
             })
 
-articles = sorted(articles, key=lambda x: x["path"], reverse=True)
+# 最新順ソート（重要修正）
+articles = sorted(articles, key=lambda x: x["ts"], reverse=True)
 
 cards = ""
 
@@ -43,6 +51,7 @@ for a in articles:
     """
 
 html = f"""<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="ja">
 <head>
 <meta charset="UTF-8">
@@ -50,14 +59,14 @@ html = f"""<!DOCTYPE html>
 <title>ひとりテックニュース</title>
 
 <style>
-body {
+body {{
     margin: 0;
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
     background: #f5f7fb;
     color: #111;
-}
+}}
 
-.nav {
+.nav {{
     background: #111;
     padding: 10px 14px;
     display: flex;
@@ -65,37 +74,33 @@ body {
     position: sticky;
     top: 0;
     z-index: 1000;
-}
+}}
 
-.nav a {
+.nav a {{
     color: white;
     text-decoration: none;
     font-size: 13px;
     opacity: 0.85;
-}
+}}
 
-.nav a:hover {
-    opacity: 1;
-}
-
-header {
+header {{
     background: white;
     padding: 18px;
     border-bottom: 1px solid #eee;
-}
+}}
 
-header h1 {
+header h1 {{
     margin: 0;
     font-size: 18px;
-}
+}}
 
-.container {
+.container {{
     max-width: 800px;
     margin: auto;
     padding: 12px;
-}
+}}
 
-.card {
+.card {{
     display: block;
     background: white;
     margin: 12px 0;
@@ -106,33 +111,32 @@ header h1 {
     color: inherit;
     transition: 0.2s;
     border-left: 4px solid #4f46e5;
-}
+}}
 
-.card:hover {
+.card:hover {{
     transform: translateY(-3px);
-}
+}}
 
-.tag {
+.tag {{
     display: inline-block;
     font-size: 11px;
     padding: 4px 10px;
     border-radius: 999px;
     margin-bottom: 8px;
-    background: #eef2ff;
-    color: #4f46e5;
+    color: white;
     font-weight: 600;
-}
+}}
 
-.title {
+.title {{
     font-size: 16px;
     font-weight: 600;
     margin-bottom: 6px;
-}
+}}
 
-.meta {
+.meta {{
     font-size: 12px;
     color: #888;
-}
+}}
 </style>
 
 </head>
