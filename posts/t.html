@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>{title}</title>
+
+<style>
+body {
+    margin: 0;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    background: #f4f6f8;
+    color: #111;
+    line-height: 1.8;
+}
+
+/* ナビ */
+nav {
+    background: #111;
+    padding: 12px 16px;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+}
+
+nav a {
+    color: white;
+    margin-right: 14px;
+    text-decoration: none;
+    font-size: 13px;
+    opacity: 0.9;
+}
+
+nav a:hover {
+    opacity: 1;
+}
+
+/* 全体レイアウト */
+.container {
+    max-width: 780px;
+    margin: auto;
+    padding: 16px;
+}
+
+/* 記事カード */
+.article {
+    background: white;
+    padding: 20px;
+    border-radius: 14px;
+    box-shadow: 0 6px 18px rgba(0,0,0,0.06);
+}
+
+/* サムネ */
+.article img {
+    width: 100%;
+    border-radius: 12px;
+    margin-bottom: 18px;
+}
+
+/* カテゴリラベル */
+.category {
+    display: inline-block;
+    font-size: 12px;
+    padding: 4px 10px;
+    border-radius: 999px;
+    background: #eef2ff;
+    color: #4f46e5;
+    margin-bottom: 10px;
+}
+
+/* タイトル */
+h1 {
+    font-size: 24px;
+    margin: 10px 0 18px;
+    letter-spacing: -0.02em;
+}
+
+/* 見出し */
+h2 {
+    margin-top: 28px;
+    font-size: 18px;
+    border-left: 4px solid #4f46e5;
+    padding-left: 10px;
+}
+
+/* 本文 */
+p {
+    margin: 12px 0;
+    font-size: 15px;
+}
+
+/* 強調 */
+strong {
+    font-weight: 600;
+}
+
+/* モバイル最適化 */
+@media (max-width: 600px) {
+    .container {
+        padding: 12px;
+    }
+
+    h1 {
+        font-size: 20px;
+    }
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="/index.html">ホーム</a>
+  <a href="/posts/ai/">AI</a>
+  <a href="/posts/gadgets/">ガジェット</a>
+  <a href="/posts/news/">ニュース</a>
+</nav>
+
+<div class="article">
+
+<img src="{image_url}" />
+
+<div class="category">カテゴリ：{category}</div>
+
+<h1>{title}</h1>
+
+<div><h3><img class="hatena-fotolife" src="https://cdn-ak.f.st-hatena.com/images/fotolife/b/blockun/20260605/20260605170341.jpg" border="0" alt="f:id:blockun:20260605170341j:image" title="f:id:blockun:20260605170341j:image" width="1024" height="579" loading="lazy" /></h3>
+<p><strong>はじめに</strong></p>
+<p>昔のマインクラフトでは、</p>
+<p>「ブランチマイニングが最強」</p>
+<p>と言われていました。</p>
+<p>しかしアップデートが進んだ今、</p>
+<p>「もう古いのでは？」<br />「洞窟の方が効率いい？」</p>
+<p>と感じる人も増えています。</p>
+<p>今回は最新版のダイヤ採掘事情をわかりやすく解説します。</p>
+<p> </p>
+<p><br /><strong>ブランチマイニングとは？</strong></p>
+<p>ブランチマイニングとは、</p>
+<p>地下で横穴を枝のように掘っていく採掘方法です。</p>
+<p>昔はこの方法が定番でした。</p>
+<p>理由はシンプルで、</p>
+<p>安全<br />効率が安定<br />確実にブロックを探せる<br />からです。</p>
+<p> </p>
+<p><br /><strong>現在のダイヤ生成の仕組み</strong></p>
+<p>今のマインクラフトではダイヤの生成ルールが変わっています。</p>
+<p>特に重要なのは、</p>
+<p>深いほどダイヤが多い</p>
+<p>ということです。</p>
+<p>つまり、</p>
+<p>地下深く（特にY座標マイナス付近）</p>
+<p>で探すのが基本になっています。</p>
+<p> </p>
+<p><br /><strong>ブランチマイニングはまだ使える？</strong></p>
+<p>結論から言うと、</p>
+<p>完全に古いわけではありません。</p>
+<p>ただし「主流ではない」という立ち位置です。</p>
+<p> </p>
+<p><br /><strong>今の主流①：洞窟探索</strong></p>
+<p>現在もっとも効率がいいと言われる方法の一つです。</p>
+<p>特に大きな洞窟では、</p>
+<p>ダイヤ鉱石が露出している<br />一気に複数見つかる<br />掘る手間が少ない<br />というメリットがあります。</p>
+<p>ただし、</p>
+<p>モンスターが多い<br />事故が起きやすい<br />というデメリットもあります。</p>
+<p> </p>
+<p><br /><strong>今の主流②：マイナスY帯直線採掘</strong></p>
+<p>最近の定番はこれです。</p>
+<p>Y=-58付近を一直線に掘る方法です。</p>
+<p>特徴は、</p>
+<p>ダイヤが出やすい高さを狙う<br />無駄な枝を作らない<br />洞窟と併用できる<br />という点です。</p>
+<p> </p>
+<p><br /><strong>ブランチマイニングの現在の立ち位置</strong></p>
+<p>昔：最強採掘法<br />今：安定した補助採掘法</p>
+<p>という感じです。</p>
+<p> </p>
+<p><br /><strong>ブランチマイニングのメリット（今でもある）</strong></p>
+<p>① 安全性が高い</p>
+<p>敵にほぼ遭遇しません。</p>
+<p>落ち着いて作業できます。</p>
+<p> </p>
+<p><br />② 見逃しが少ない</p>
+<p>一本道を効率よく掘るため、</p>
+<p>鉱石の取りこぼしが少なくなります。</p>
+<p> </p>
+<p><br />③ 安定して収集できる</p>
+<p>運に左右されにくいのが強みです。</p>
+<p> </p>
+<p><br /><strong>デメリット</strong></p>
+<p>① 時間がかかる</p>
+<p>洞窟探索よりスピードは遅いです。</p>
+<p> </p>
+<p><br />② 効率が環境依存</p>
+<p>最新バージョンでは洞窟の方が有利なことが多いです。</p>
+<p> </p>
+<p><br />③ 作業感が強い</p>
+<p>単純作業になりやすく、飽きやすいです。</p>
+<p> </p>
+<p><br /><strong>上級者の実際のやり方</strong></p>
+<p>今のガチ勢はこうしています。</p>
+<p>① 洞窟で露出ダイヤ回収</p>
+<p>↓</p>
+<p>② 足りない分を直線採掘</p>
+<p>↓</p>
+<p>③ 最後にブランチマイニングで補完</p>
+<p>つまり、</p>
+<p>ハイブリッド型採掘</p>
+<p>です。</p>
+<p> </p>
+<p><br /><strong>どっちをやるべき？</strong></p>
+<p>初心者</p>
+<p>→ 洞窟探索＋少しブランチマイニング</p>
+<p>中級者</p>
+<p>→ Y=-58直線採掘</p>
+<p>上級者</p>
+<p>→ 洞窟メイン＋効率補完採掘</p>
+<p> </p>
+<p><br /><strong>結論</strong></p>
+<p>ブランチマイニングは「古い」わけではありません。</p>
+<p>ただし今は、</p>
+<p>メインではなく補助的な採掘方法</p>
+<p>になっています。</p>
+<p>それでも、</p>
+<p>安全に掘りたい<br />安定してダイヤが欲しい<br />という人には今でも十分使える方法です。</p>
+<p> </p>
+<p><br /><strong>まとめ</strong></p>
+<p>マイクラの採掘方法はアップデートごとに変化しています。</p>
+<p>昔はブランチマイニング一択でしたが、</p>
+<p>今は</p>
+<p>洞窟探索<br />直線採掘<br />ブランチマイニング<br />を組み合わせる時代です。</p>
+<p>自分のプレイスタイルに合わせて使い分けるのが一番効率的でしょう。</p>
+</div>
+
+</div>
+
+</body>
+</html>
