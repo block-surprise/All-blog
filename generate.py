@@ -119,6 +119,7 @@ body_prompt = f"""
 - 1500〜3500文字
 - HTMLのみ
 - 説明禁止
+- ```htmlなどは書かないでください
 """
 
 body = model.generate_content(body_prompt).text
