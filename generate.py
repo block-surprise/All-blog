@@ -2,7 +2,7 @@ import os
 import random
 import feedparser
 import urllib.parse
-import markdown
+import requests
 import google.generativeai as genai
 from datetime import datetime
 
@@ -13,6 +13,7 @@ from datetime import datetime
 genai.configure(api_key=os.environ["GOOGLE_API_KEY"])
 model = genai.GenerativeModel("gemini-2.5-flash")
 
+
 # =====================
 # RSSトレンド取得
 # =====================
@@ -20,6 +21,10 @@ rss_url = "https://news.google.com/rss?hl=ja&gl=JP&ceid=JP:ja"
 feed = feedparser.parse(rss_url)
 
 topic = random.choice(feed.entries[:10]).title
+
+# ノイズ除去（重要）
+clean_topic = topic.split(" - ")[0].split("｜")[0]
+
 
 # =====================
 # カテゴリ分類
@@ -34,69 +39,93 @@ def get_category(text):
     else:
         return "news"
 
-category = get_category(topic)
+category = get_category(clean_topic)
+
 
 # =====================
-# サムネ
+# 画像取得（Wikipedia優先）
 # =====================
-def get_image(query):
-    return f"https://source.unsplash.com/featured/800x400/?{urllib.parse.quote(query)}"
+def get_wikipedia_image(query):
+    try:
+        url = "https://ja.wikipedia.org/api/rest_v1/page/summary/" + urllib.parse.quote(query)
+        res = requests.get(url, timeout=5).json()
 
-image_url = get_image(topic)
+        if "thumbnail" in res and res["thumbnail"]:
+            return res["thumbnail"]["source"]
+        return None
+    except:
+        return None
+
+
+def get_unsplash_image(query):
+    return f"https://source.unsplash.com/800x400/?{urllib.parse.quote(query)}"
+
+
+image_url = get_wikipedia_image(clean_topic)
+
+if not image_url:
+    image_url = get_unsplash_image(clean_topic.split(" ")[0])
+
 
 # =====================
-# タイトル
+# タイトル生成
 # =====================
 title_prompt = f"""
 あなたはSEO編集者です。
 
-テーマ：{topic}
+テーマ：{clean_topic}
 
 30文字以内でクリックされるタイトルを作ってください。
+
 ルール：
-
 - 30文字以内
-
 - 日本語
-
-- タイトル“だけ”を出力する
-
-- 説明や補足は禁止
-
-- （ ）や「文字」などの注釈は禁止
+- タイトルだけ出力
+- 記号・補足禁止
 """
 
 title = model.generate_content(title_prompt).text.strip()
 
+
 # =====================
-# 本文（強化版）
+# 本文（HTMLで生成）
 # =====================
 body_prompt = f"""
 あなたはプロのテックメディア編集者です。
 
-テーマ：{topic}
+テーマ：{clean_topic}
 
-以下構成で記事を書いてください：
+以下構成でHTMLで書いてください：
 
-1. なぜ重要か
-2. 背景
-3. 詳細解説
-4. 具体例
-5. 今後の影響
-6. まとめ（3行）
+<h2>なぜ重要か</h2>
+<p></p>
+
+<h2>背景</h2>
+<p></p>
+
+<h2>詳細解説</h2>
+<p></p>
+
+<h2>具体例</h2>
+<p></p>
+
+<h2>今後の影響</h2>
+<p></p>
+
+<h2>まとめ</h2>
+<p>3行で簡潔に</p>
 
 条件：
 - 1500〜3500文字
-- H2見出し
-- 初心者向け
-
+- HTMLのみ
+- 説明禁止
 """
 
-raw_body = model.generate_content(body_prompt).text
-body = markdown.markdown(raw_body)
+body = model.generate_content(body_prompt).text
+
 
 # =====================
-# 記事HTML
+# HTML生成
 # =====================
 def build_html(title, body, category, image_url):
     return f"""
@@ -166,30 +195,11 @@ nav a {{
     margin: 10px 0;
 }}
 
-h1 {{
-    font-size: 24px;
-}}
-
 h2 {{
     border-left: 4px solid #4f46e5;
     padding-left: 10px;
     font-size: 18px;
     margin-top: 28px;
-}}
-
-.related {{
-    margin-top: 30px;
-    padding: 14px;
-    background: #f9fafb;
-    border-radius: 12px;
-}}
-
-.related a {{
-    display: block;
-    color: #4f46e5;
-    text-decoration: none;
-    font-size: 14px;
-    margin: 4px 0;
 }}
 </style>
 </head>
@@ -208,7 +218,7 @@ h2 {{
 
 <div class="article">
 
-<img src="{image_url}" alt="{title}">
+<img src="{image_url}" alt="{title}" loading="lazy">
 
 <div class="category">{category}</div>
 
@@ -224,8 +234,9 @@ h2 {{
 </html>
 """
 
+
 # =====================
-# 保存（★修正：重複防止）
+# 保存
 # =====================
 os.makedirs(f"posts/{category}", exist_ok=True)
 
