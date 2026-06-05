@@ -2,8 +2,10 @@ import os
 import random
 import feedparser
 import urllib.parse
+import markdown
 import google.generativeai as genai
 from datetime import datetime
+
 
 # =====================
 # APIキー
