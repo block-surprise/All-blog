@@ -6,29 +6,28 @@ import google.generativeai as genai
 from datetime import datetime
 
 # =====================
-# APIキー設定
+# APIキー
 # =====================
 genai.configure(api_key=os.environ["GOOGLE_API_KEY"])
-model = genai.GenerativeModel("gemini-1.5-flash")
+model = genai.GenerativeModel("gemini-2.5-flash")
 
 # =====================
-# RSSからトピック取得（トレンド自動化）
+# RSSトレンド取得
 # =====================
 rss_url = "https://news.google.com/rss?hl=ja&gl=JP&ceid=JP:ja"
 feed = feedparser.parse(rss_url)
 
-entries = feed.entries[:10]
-topic = random.choice(entries).title
+topic = random.choice(feed.entries[:10]).title
 
 # =====================
-# カテゴリ判定（超重要）
+# カテゴリ分類
 # =====================
 def get_category(text):
     text = text.lower()
 
-    if any(w in text for w in ["ai", "人工知能", "chatgpt", "gemini"]):
+    if any(w in text for w in ["ai", "chatgpt", "gemini", "人工知能"]):
         return "ai"
-    elif any(w in text for w in ["iphone", "android", "pc", "ガジェット", "スマホ"]):
+    elif any(w in text for w in ["iphone", "android", "pc", "スマホ", "ガジェット"]):
         return "gadgets"
     else:
         return "news"
@@ -36,7 +35,7 @@ def get_category(text):
 category = get_category(topic)
 
 # =====================
-# サムネ画像（簡易版）
+# サムネ画像
 # =====================
 def get_image(query):
     base = "https://source.unsplash.com/800x400/?"
@@ -50,7 +49,7 @@ image_url = get_image(topic)
 title_prompt = f"""
 あなたはSEO専門の編集者です。
 
-以下のニューステーマでクリックされるタイトルを1つ作ってください。
+以下のニュースからクリックされるタイトルを1つ作ってください：
 
 テーマ：{topic}
 
@@ -61,14 +60,13 @@ title_prompt = f"""
 - 意外性を入れる
 """
 
-title_res = model.generate_content(title_prompt)
-title = title_res.text.strip()
+title = model.generate_content(title_prompt).text.strip()
 
 # =====================
 # 本文生成
 # =====================
 body_prompt = f"""
-あなたはテック系ニュースライターです。
+あなたはプロのテックニュースライターです。
 
 以下のテーマで記事を書いてください：
 
@@ -77,29 +75,104 @@ body_prompt = f"""
 条件：
 - 見出し付き（H2）
 - 1500〜2500文字
-- わかりやすい日本語
 - 初心者向け
-- 具体例あり
+- 具体例を入れる
+- 自然な日本語
 """
 
-body_res = model.generate_content(body_prompt)
-body = body_res.text
+body = model.generate_content(body_prompt).text
 
 # =====================
-# 保存先
+# 記事HTML生成
+# =====================
+def build_html(title, body, category, image_url):
+    return f"""
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>{title}</title>
+
+<style>
+body {{
+    font-family: sans-serif;
+    max-width: 800px;
+    margin: auto;
+    padding: 20px;
+    background: #f6f7fb;
+    line-height: 1.7;
+}}
+
+nav {{
+    background: #111;
+    padding: 10px;
+    margin-bottom: 20px;
+}}
+
+nav a {{
+    color: white;
+    margin-right: 15px;
+    text-decoration: none;
+}}
+
+.article {{
+    background: white;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}}
+
+img {{
+    width: 100%;
+    border-radius: 10px;
+    margin-bottom: 20px;
+}}
+
+.category {{
+    color: gray;
+    font-size: 14px;
+    margin-bottom: 10px;
+}}
+</style>
+
+</head>
+<body>
+
+<nav>
+  <a href="/index.html">ホーム</a>
+  <a href="/posts/ai/">AI</a>
+  <a href="/posts/gadgets/">ガジェット</a>
+  <a href="/posts/news/">ニュース</a>
+</nav>
+
+<div class="article">
+
+<img src="{image_url}" />
+
+<div class="category">カテゴリ：{category}</div>
+
+<h1>{title}</h1>
+
+<div>
+{body}
+</div>
+
+</div>
+
+</body>
+</html>
+"""
+
+# =====================
+# 保存
 # =====================
 os.makedirs(f"posts/{category}", exist_ok=True)
 
 date = datetime.now().strftime("%Y-%m-%d")
-filename = f"posts/{category}/{date}.md"
+filename = f"posts/{category}/{date}.html"
 
-# =====================
-# Markdown生成
-# =====================
 with open(filename, "w", encoding="utf-8") as f:
-    f.write(f"![thumbnail]({image_url})\n\n")
-    f.write(f"# {title}\n\n")
-    f.write(f"**カテゴリ：{category}**\n\n")
-    f.write(body)
+    f.write(build_html(title, body, category, image_url))
 
-print("記事生成完了:", title, "| category:", category)
+print("記事生成完了:", title)
