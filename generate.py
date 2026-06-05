@@ -20,7 +20,7 @@ model = genai.GenerativeModel("gemini-2.5-flash")
 rss_url = "https://news.google.com/rss?hl=ja&gl=JP&ceid=JP:ja"
 feed = feedparser.parse(rss_url)
 
-topic = random.choice(feed.entries[:10]).title
+
 
 # ノイズ除去（重要）
 clean_topic = topic.split(" - ")[0].split("｜")[0]
@@ -42,31 +42,29 @@ def get_category(text):
 category = get_category(clean_topic)
 
 
-# =====================
-# 画像取得（Wikipedia優先）
-# =====================
-def get_wikipedia_image(query):
+def get_picsum_image(query):
+    import hashlib
+    seed = hashlib.md5(query.encode()).hexdigest()[:10]
+    return f"https://picsum.photos/seed/{seed}/800/400"
+
+
+def get_image(query):
+    # 1. Wikipedia
+    img = get_wikipedia_image(query)
+    if img:
+        return img
+
+    # 2. Unsplash
     try:
-        url = "https://ja.wikipedia.org/api/rest_v1/page/summary/" + urllib.parse.quote(query)
-        res = requests.get(url, timeout=5).json()
-
-        if "thumbnail" in res and res["thumbnail"]:
-            return res["thumbnail"]["source"]
-        return None
+        return f"https://source.unsplash.com/800x400/?{urllib.parse.quote(query)}"
     except:
-        return None
+        pass
+
+    # 3. 最終保険（絶対出る）
+    return get_picsum_image(query)
 
 
-def get_unsplash_image(query):
-    return f"https://source.unsplash.com/800x400/?{urllib.parse.quote(query)}"
-
-
-image_url = get_wikipedia_image(clean_topic)
-
-if not image_url:
-    image_url = get_unsplash_image(clean_topic.split(" ")[0])
-
-
+image_url = get_image(clean_topic)
 # =====================
 # タイトル生成
 # =====================
