@@ -1,42 +1,61 @@
 import os
+import re
 from datetime import datetime
 
 POST_DIR = "posts"
 
 articles = []
 
+def extract_title(html_path):
+    """HTMLの<h1>からタイトルを取得"""
+    try:
+        with open(html_path, "r", encoding="utf-8") as f:
+            html = f.read()
+
+        match = re.search(r"<h1>(.*?)</h1>", html)
+        if match:
+            return match.group(1)
+
+    except:
+        pass
+
+    return "タイトルなし"
+
 for root, dirs, files in os.walk(POST_DIR):
     for f in files:
-        if f.endswith(".html"):
-            path = os.path.join(root, f).replace("\\", "/")
+        if not f.endswith(".html"):
+            continue
 
-            title = f.replace(".html", "")
+        path = os.path.join(root, f).replace("\\", "/")
 
-            # カテゴリ判定
-            if "/ai/" in path:
-                cat = "AI"
-                color = "#4f46e5"
-            elif "/gadgets/" in path:
-                cat = "ガジェット"
-                color = "#059669"
-            else:
-                cat = "ニュース"
-                color = "#dc2626"
+        # 👇ここが重要（ファイル名じゃなくHTMLから取得）
+        title = extract_title(path)
 
-            # ファイル更新時間（重要）
-            ts = os.path.getmtime(os.path.join(root, f))
-            time = datetime.fromtimestamp(ts).strftime("%m-%d %H:%M")
+        # カテゴリ判定
+        if "/ai/" in path:
+            cat = "AI"
+            color = "#4f46e5"
+        elif "/gadgets/" in path:
+            cat = "ガジェット"
+            color = "#059669"
+        else:
+            cat = "ニュース"
+            color = "#dc2626"
 
-            articles.append({
-                "title": title,
-                "path": path,
-                "cat": cat,
-                "color": color,
-                "time": time,
-                "ts": ts
-            })
+        # 更新時間
+        ts = os.path.getmtime(path)
+        time = datetime.fromtimestamp(ts).strftime("%m-%d %H:%M")
 
-# 最新順ソート（重要修正）
+        articles.append({
+            "title": title,
+            "path": path,
+            "cat": cat,
+            "color": color,
+            "time": time,
+            "ts": ts
+        })
+
+# 新しい順
 articles = sorted(articles, key=lambda x: x["ts"], reverse=True)
 
 cards = ""
@@ -51,7 +70,6 @@ for a in articles:
     """
 
 html = f"""<!DOCTYPE html>
-<!DOCTYPE html>
 <html lang="ja">
 <head>
 <meta charset="UTF-8">
@@ -73,25 +91,18 @@ body {{
     gap: 14px;
     position: sticky;
     top: 0;
-    z-index: 1000;
 }}
 
 .nav a {{
     color: white;
     text-decoration: none;
     font-size: 13px;
-    opacity: 0.85;
 }}
 
 header {{
     background: white;
     padding: 18px;
     border-bottom: 1px solid #eee;
-}}
-
-header h1 {{
-    margin: 0;
-    font-size: 18px;
 }}
 
 .container {{
@@ -106,15 +117,8 @@ header h1 {{
     margin: 12px 0;
     padding: 16px;
     border-radius: 16px;
-    box-shadow: 0 6px 18px rgba(0,0,0,0.06);
     text-decoration: none;
     color: inherit;
-    transition: 0.2s;
-    border-left: 4px solid #4f46e5;
-}}
-
-.card:hover {{
-    transform: translateY(-3px);
 }}
 
 .tag {{
@@ -122,15 +126,13 @@ header h1 {{
     font-size: 11px;
     padding: 4px 10px;
     border-radius: 999px;
-    margin-bottom: 8px;
     color: white;
-    font-weight: 600;
+    margin-bottom: 8px;
 }}
 
 .title {{
     font-size: 16px;
     font-weight: 600;
-    margin-bottom: 6px;
 }}
 
 .meta {{
@@ -138,8 +140,8 @@ header h1 {{
     color: #888;
 }}
 </style>
-
 </head>
+
 <body>
 
 <nav class="nav">
