@@ -52,6 +52,17 @@ title_prompt = f"""
 テーマ：{topic}
 
 30文字以内でクリックされるタイトルを作ってください。
+ルール：
+
+- 30文字以内
+
+- 日本語
+
+- タイトル“だけ”を出力する
+
+- 説明や補足は禁止
+
+- （ ）や「文字」などの注釈は禁止
 """
 
 title = model.generate_content(title_prompt).text.strip()
@@ -77,6 +88,7 @@ body_prompt = f"""
 - 1500〜3500文字
 - H2見出し
 - 初心者向け
+
 """
 
 body = model.generate_content(body_prompt).text
