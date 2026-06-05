@@ -1,6 +1,6 @@
 import os
 
-BASE_URL = "https://YOUR_USERNAME.github.io/YOUR_REPO"
+BASE_URL = "https://htn-news.f5.si"
 POST_DIR = "posts"
 
 files = sorted(os.listdir(POST_DIR), reverse=True)
