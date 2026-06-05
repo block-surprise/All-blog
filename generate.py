@@ -96,56 +96,102 @@ def build_html(title, body, category, image_url):
 
 <style>
 body {
-    font-family: sans-serif;
-    max-width: 800px;
-    margin: auto;
-    padding: 20px;
+    margin: 0;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
     background: #f4f6f8;
-    line-height: 1.8;
     color: #111;
+    line-height: 1.8;
 }
 
+/* ナビ */
 nav {
     background: #111;
-    padding: 10px;
-    margin-bottom: 20px;
-    border-radius: 10px;
+    padding: 12px 16px;
+    position: sticky;
+    top: 0;
+    z-index: 10;
 }
 
 nav a {
     color: white;
-    margin-right: 15px;
+    margin-right: 14px;
     text-decoration: none;
-    font-size: 14px;
+    font-size: 13px;
+    opacity: 0.9;
 }
 
+nav a:hover {
+    opacity: 1;
+}
+
+/* 全体レイアウト */
+.container {
+    max-width: 780px;
+    margin: auto;
+    padding: 16px;
+}
+
+/* 記事カード */
 .article {
     background: white;
-    padding: 25px;
-    border-radius: 12px;
-    box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+    padding: 20px;
+    border-radius: 14px;
+    box-shadow: 0 6px 18px rgba(0,0,0,0.06);
 }
 
-h1 {
-    font-size: 26px;
-    margin-bottom: 10px;
-}
-
-h2 {
-    margin-top: 25px;
-    font-size: 20px;
-}
-
-img {
+/* サムネ */
+.article img {
     width: 100%;
-    border-radius: 10px;
-    margin-bottom: 20px;
+    border-radius: 12px;
+    margin-bottom: 18px;
 }
 
+/* カテゴリラベル */
 .category {
-    font-size: 13px;
-    color: gray;
+    display: inline-block;
+    font-size: 12px;
+    padding: 4px 10px;
+    border-radius: 999px;
+    background: #eef2ff;
+    color: #4f46e5;
     margin-bottom: 10px;
+}
+
+/* タイトル */
+h1 {
+    font-size: 24px;
+    margin: 10px 0 18px;
+    letter-spacing: -0.02em;
+}
+
+/* 見出し */
+h2 {
+    margin-top: 28px;
+    font-size: 18px;
+    border-left: 4px solid #4f46e5;
+    padding-left: 10px;
+}
+
+/* 本文 */
+p {
+    margin: 12px 0;
+    font-size: 15px;
+}
+
+/* 強調 */
+strong {
+    font-weight: 600;
+}
+
+/* モバイル最適化 */
+@media (max-width: 600px) {
+    .container {
+        padding: 12px;
+    }
+
+    h1 {
+        font-size: 20px;
+    }
 }
 </style>
 </head>
