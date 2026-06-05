@@ -153,21 +153,44 @@ body {{
     border-bottom: 1px solid #eee;
 }}
 
-nav {{
+.nav {{
     background: #111;
-    padding: 12px 16px;
+    padding: 12px 18px;
+    display: flex;
+    gap: 18px;
     position: sticky;
     top: 0;
-    display: flex;
-    gap: 14px;
+    z-index: 1000;
+    align-items: center;
 }}
 
-nav a {{
+.nav a {{
     color: white;
     text-decoration: none;
-    font-size: 13px;
+    font-size: 14px;
+    font-weight: 600;
+    opacity: 0.85;
+    padding: 6px 10px;
+    border-radius: 8px;
+    transition: 0.2s;
 }}
 
+.nav a:hover {{
+    opacity: 1;
+    background: rgba(255,255,255,0.12);
+}}
+@media (max-width: 600px) {{
+    .nav {
+        overflow-x: auto;
+        white-space: nowrap;
+        gap: 10px;
+    }
+
+    .nav a {
+        font-size: 13px;
+        flex-shrink: 0;
+    }
+}}
 .container {{
     max-width: 780px;
     margin: auto;
