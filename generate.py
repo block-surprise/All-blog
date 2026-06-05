@@ -40,8 +40,7 @@ category = get_category(topic)
 # サムネ
 # =====================
 def get_image(query):
-    base = "https://source.unsplash.com/800x400/?"
-    return base + urllib.parse.quote(query)
+    return f"https://source.unsplash.com/featured/800x400/?{urllib.parse.quote(query)}"
 
 image_url = get_image(topic)
 
@@ -93,7 +92,8 @@ body_prompt = f"""
 
 """
 
-body = model.generate_content(body_prompt).text
+raw_body = model.generate_content(body_prompt).text
+body = markdown.markdown(raw_body)
 
 # =====================
 # 記事HTML
@@ -208,7 +208,7 @@ h2 {{
 
 <div class="article">
 
-<img src="{image_url}" />
+<img src="{image_url}" alt="{title}">
 
 <div class="category">{category}</div>
 
