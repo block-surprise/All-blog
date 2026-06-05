@@ -1,14 +1,22 @@
 <?xml version="1.0" encoding="UTF-8"?>
-
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 
 <url>
-
   <loc>https://htn-news.f5.si</loc>
-
 </url>
 
 
+<url>
+  <loc>https://htn-news.f5.si/posts/news/2026-06-05-125001.html</loc>
+</url>
+
+<url>
+  <loc>https://htn-news.f5.si/posts/news/2026-06-05-130625.html</loc>
+</url>
+
+<url>
+  <loc>https://htn-news.f5.si/posts/news/2026-06-05-122328.html</loc>
+</url>
+
 
 </urlset>
-
