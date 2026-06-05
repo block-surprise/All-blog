@@ -1,6 +1,8 @@
 name: AI Blog Generator
+
 permissions:
   contents: write
+
 on:
   schedule:
     - cron: "0 * * * *"
@@ -27,12 +29,12 @@ jobs:
 
       # =====================
       # 依存関係インストール
-      # ★ここが超重要
       # =====================
       - name: Install dependencies
-run: |
-  pip install --upgrade pip
-  pip install google-generativeai feedparser requests markdown
+        run: |
+          pip install --upgrade pip
+          pip install google-generativeai feedparser requests markdown
+
       # =====================
       # 記事生成
       # =====================
