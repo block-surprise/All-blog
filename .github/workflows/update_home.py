@@ -18,11 +18,11 @@ html = f"""
 <html lang="ja">
 <head>
 <meta charset="UTF-8">
-<title>AI Blog</title>
+<title>ひとりテックニュース</title>
 </head>
 <body>
-<h1>AI Blog</h1>
-<p>自動生成ブログ</p>
+<h1>ひとりテックニュース</h1>
+<p>ひとつひとつ分かりやすいニュース</p>
 
 <h2>記事一覧</h2>
 <ul>
