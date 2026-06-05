@@ -30,10 +30,9 @@ jobs:
       # ★ここが超重要
       # =====================
       - name: Install dependencies
-        run: |
-          pip install --upgrade pip
-          pip install google-generativeai feedparser requests
-
+run: |
+  pip install --upgrade pip
+  pip install google-generativeai feedparser requests markdown
       # =====================
       # 記事生成
       # =====================
