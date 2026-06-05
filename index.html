@@ -1,42 +1,67 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>ひとりテックニュース</title>
-  <style>
-    body {
-      font-family: sans-serif;
-      max-width: 800px;
-      margin: auto;
-      padding: 20px;
-      background: #fafafa;
-    }
-    h1 {
-      color: #111;
-    }
-    .post {
-      background: white;
-      padding: 15px;
-      margin: 10px 0;
-      border-radius: 10px;
-      box-shadow: 0 1px 4px rgba(0,0,0,0.1);
-    }
-    a {
-      text-decoration: none;
-      color: #1a73e8;
-    }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ひとりテックニュース</title>
+
+<style>
+body {
+    font-family: sans-serif;
+    max-width: 900px;
+    margin: auto;
+    padding: 20px;
+    background: #f6f7fb;
+}
+
+h1 {
+    color: #111;
+}
+
+.category {
+    margin-top: 20px;
+}
+
+.card {
+    background: white;
+    padding: 12px;
+    margin: 10px 0;
+    border-radius: 10px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+}
+
+a {
+    text-decoration: none;
+    color: #1a73e8;
+    font-weight: bold;
+}
+
+small {
+    color: gray;
+}
+</style>
+
 </head>
 <body>
 
 <h1>ひとりテックニュース</h1>
-<p>AIが自動生成するテック情報メディア</p>
+<p>ひとつひとつわかりやすいニュース</p>
 
-<h2>最新記事</h2>
+<h2>カテゴリ別記事</h2>
 
-<div id="posts">
-  <p>記事は自動更新されます</p>
+<div class="category">
+<h3>AI</h3>
+<p><a href="posts/ai/">AIカテゴリを見る</a></p>
+</div>
+
+<div class="category">
+<h3>ガジェット</h3>
+<p><a href="posts/gadgets/">ガジェットカテゴリを見る</a></p>
+</div>
+
+<div class="category">
+<h3>ニュース</h3>
+<p><a href="posts/news/">ニュースカテゴリを見る</a></p>
 </div>
 
 </body>
