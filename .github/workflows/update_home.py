@@ -167,7 +167,9 @@ header {{
 </head>
 
 <body>
-
+<header>
+<h1>ひとりテックニュース</h1>
+</header>
 <nav class="nav">
   <a href="/index.html">ホーム</a>
   <a href="/posts/ai/">AI</a>
@@ -175,9 +177,7 @@ header {{
   <a href="/posts/news/">ニュース</a>
 </nav>
 
-<header>
-<h1>ひとりテックニュース</h1>
-</header>
+
 
 <div class="container">
 {cards}
