@@ -1,38 +1,47 @@
 import os
-from openai import OpenAI
+import google.generativeai as genai
 from datetime import datetime
 
-client = OpenAI(api_key=os.environ["OPENAI_API_KEY"])
+# ===== APIキー設定 =====
+genai.configure(api_key=os.environ["GOOGLE_API_KEY"])
 
+# ===== モデル指定 =====
+model = genai.GenerativeModel("gemini-1.5-flash")
+
+# ===== テーマ（ここは後で自動化できる）=====
 topic = "最新のテクノロジートレンド"
 
+# ===== プロンプト（記事品質の核）=====
 prompt = f"""
-あなたはプロのブログライターです。
-以下のテーマでブログ記事を書いてください。
+あなたはプロのSEOブログライターです。
+
+以下のテーマでブログ記事を書いてください：
 
 テーマ：{topic}
 
 条件：
-- 見出し付き
-- 1500文字以上
-- わかりやすく
 - 日本語
+- 見出し付き（H2構造）
+- 1500〜2500文字
+- 初心者にもわかる
+- 具体例を必ず入れる
+- タイトルはクリックしたくなるものにする
+- AIっぽさを消して自然な文章にする
 """
 
-res = client.chat.completions.create(
-    model="gpt-4o-mini",
-    messages=[{"role": "user", "content": prompt}]
-)
+# ===== AI生成 =====
+response = model.generate_content(prompt)
+content = response.text
 
-content = res.choices[0].message.content
-
+# ===== 保存先フォルダ =====
 os.makedirs("posts", exist_ok=True)
 
+# ===== ファイル名 =====
 date = datetime.now().strftime("%Y-%m-%d")
 filename = f"posts/{date}.md"
 
+# ===== Markdownとして保存 =====
 with open(filename, "w", encoding="utf-8") as f:
-    f.write(f"# {topic}\n\n")
     f.write(content)
 
-print("done")
+print("記事生成完了")
