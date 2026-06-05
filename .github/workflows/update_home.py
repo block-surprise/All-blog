@@ -3,22 +3,44 @@ from datetime import datetime
 
 POST_DIR = "posts"
 
-html_cards = ""
+articles = []
 
 for root, dirs, files in os.walk(POST_DIR):
-    for f in sorted(files, reverse=True):
+    for f in files:
         if f.endswith(".html"):
             path = os.path.join(root, f).replace("\\", "/")
-
             title = f.replace(".html", "")
 
-            html_cards += f"""
-            <div class="card">
-              <a href="{path}">
-                <h2>{title}</h2>
-              </a>
-            </div>
-            """
+            if "/ai/" in path:
+                cat = "AI"
+                color = "#4f46e5"
+            elif "/gadgets/" in path:
+                cat = "ガジェット"
+                color = "#059669"
+            else:
+                cat = "ニュース"
+                color = "#dc2626"
+
+            articles.append({
+                "title": title,
+                "path": path,
+                "cat": cat,
+                "color": color,
+                "time": datetime.now().strftime("%m-%d")
+            })
+
+articles = sorted(articles, key=lambda x: x["path"], reverse=True)
+
+cards = ""
+
+for a in articles:
+    cards += f"""
+    <a class="card" href="{a['path']}">
+        <div class="tag" style="background:{a['color']}">{a['cat']}</div>
+        <div class="title">{a['title']}</div>
+        <div class="meta">{a['time']}</div>
+    </a>
+    """
 
 html = f"""
 <!DOCTYPE html>
@@ -30,32 +52,40 @@ html = f"""
 
 <style>
 body {{
-    font-family: sans-serif;
-    max-width: 900px;
-    margin: auto;
-    padding: 20px;
-    background: #f4f6f8;
+    margin: 0;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    background: #f5f7fb;
+    color: #111;
 }}
 
 header {{
-    padding: 20px 0;
+    background: white;
+    padding: 18px;
+    border-bottom: 1px solid #eee;
+    position: sticky;
+    top: 0;
 }}
 
-h1 {{
-    font-size: 32px;
+header h1 {{
+    margin: 0;
+    font-size: 18px;
 }}
 
-.sub {{
-    color: gray;
-    margin-bottom: 20px;
+.container {{
+    max-width: 800px;
+    margin: auto;
+    padding: 12px;
 }}
 
 .card {{
+    display: block;
     background: white;
-    padding: 15px;
-    margin: 15px 0;
-    border-radius: 12px;
-    box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+    margin: 12px 0;
+    padding: 14px;
+    border-radius: 14px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+    text-decoration: none;
+    color: inherit;
     transition: 0.2s;
 }}
 
@@ -63,14 +93,24 @@ h1 {{
     transform: translateY(-2px);
 }}
 
-a {{
-    text-decoration: none;
-    color: black;
+.tag {{
+    display: inline-block;
+    color: white;
+    font-size: 11px;
+    padding: 3px 8px;
+    border-radius: 20px;
+    margin-bottom: 8px;
 }}
 
-h2 {{
-    font-size: 18px;
-    margin: 0;
+.title {{
+    font-size: 16px;
+    font-weight: 600;
+    margin-bottom: 6px;
+}}
+
+.meta {{
+    font-size: 12px;
+    color: #888;
 }}
 </style>
 
@@ -79,10 +119,11 @@ h2 {{
 
 <header>
 <h1>ひとりテックニュース</h1>
-<div class="sub">ひとつひとつ分かりやすいニュース</div>
 </header>
 
-{html_cards}
+<div class="container">
+{cards}
+</div>
 
 </body>
 </html>
@@ -91,4 +132,4 @@ h2 {{
 with open("index.html", "w", encoding="utf-8") as f:
     f.write(html)
 
-print("homepage updated")
+print("updated")
