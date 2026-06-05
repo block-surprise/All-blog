@@ -95,47 +95,59 @@ def build_html(title, body, category, image_url):
 <title>{title}</title>
 
 <style>
-body {{
+body {
     font-family: sans-serif;
     max-width: 800px;
     margin: auto;
     padding: 20px;
-    background: #f6f7fb;
-    line-height: 1.7;
-}}
+    background: #f4f6f8;
+    line-height: 1.8;
+    color: #111;
+}
 
-nav {{
+nav {
     background: #111;
     padding: 10px;
     margin-bottom: 20px;
-}}
+    border-radius: 10px;
+}
 
-nav a {{
+nav a {
     color: white;
     margin-right: 15px;
     text-decoration: none;
-}}
+    font-size: 14px;
+}
 
-.article {{
+.article {
     background: white;
-    padding: 20px;
-    border-radius: 10px;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-}}
+    padding: 25px;
+    border-radius: 12px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+}
 
-img {{
+h1 {
+    font-size: 26px;
+    margin-bottom: 10px;
+}
+
+h2 {
+    margin-top: 25px;
+    font-size: 20px;
+}
+
+img {
     width: 100%;
     border-radius: 10px;
     margin-bottom: 20px;
-}}
+}
 
-.category {{
+.category {
+    font-size: 13px;
     color: gray;
-    font-size: 14px;
     margin-bottom: 10px;
-}}
+}
 </style>
-
 </head>
 <body>
 
