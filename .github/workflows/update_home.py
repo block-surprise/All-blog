@@ -77,22 +77,24 @@ html = f"""<!DOCTYPE html>
 <title>ひとりテックニュース</title>
 
 <style>
-body {{
+body {
     margin: 0;
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
     background: #f5f7fb;
     color: #111;
-}}
+}
 
-..nav {
+/* ===== ナビ ===== */
+.nav {
     background: #111;
     padding: 12px 18px;
     display: flex;
-    gap: 18px;
+    gap: 14px;
     position: sticky;
     top: 0;
     z-index: 1000;
     align-items: center;
+    overflow-x: auto;
 }
 
 .nav a {
@@ -103,66 +105,102 @@ body {{
     opacity: 0.85;
     padding: 6px 10px;
     border-radius: 8px;
-    transition: 0.2s;
+    white-space: nowrap;
 }
 
 .nav a:hover {
     opacity: 1;
     background: rgba(255,255,255,0.12);
 }
-@media (max-width: 600px) {
-    .nav {
-        overflow-x: auto;
-        white-space: nowrap;
-        gap: 10px;
-    }
 
-    .nav a {
-        font-size: 13px;
-        flex-shrink: 0;
-    }
-}
-
-header {{
+/* ===== ヘッダー（新聞っぽく） ===== */
+header {
     background: white;
     padding: 18px;
     border-bottom: 1px solid #eee;
-}}
+}
 
-.container {{
-    max-width: 800px;
+header h1 {
+    margin: 0;
+    font-size: 18px;
+    font-weight: 700;
+}
+
+/* ===== コンテナ ===== */
+.container {
+    max-width: 780px;
     margin: auto;
-    padding: 12px;
-}}
+    padding: 10px 12px;
+}
 
-.card {{
+/* ===== セクション（重要） ===== */
+.section-title {
+    font-size: 13px;
+    font-weight: 700;
+    color: #666;
+    margin: 18px 0 8px;
+    padding-left: 6px;
+}
+
+/* ===== 記事リスト型（カードやめる） ===== */
+.card {
     display: block;
     background: white;
-    margin: 12px 0;
-    padding: 16px;
-    border-radius: 16px;
+    padding: 14px 14px;
+    border-bottom: 1px solid #eee;
     text-decoration: none;
     color: inherit;
-}}
+    transition: 0.15s;
+}
 
-.tag {{
+.card:hover {
+    background: #f9fafb;
+}
+
+/* タグ */
+.tag {
     display: inline-block;
     font-size: 11px;
-    padding: 4px 10px;
+    padding: 3px 8px;
     border-radius: 999px;
     color: white;
-    margin-bottom: 8px;
-}}
+    margin-bottom: 6px;
+}
 
-.title {{
-    font-size: 16px;
+/* タイトル */
+.title {
+    font-size: 15px;
     font-weight: 600;
-}}
+    line-height: 1.4;
+    margin-bottom: 4px;
+}
 
-.meta {{
+/* メタ */
+.meta {
     font-size: 12px;
     color: #888;
-}}
+}
+
+/* ===== 強調記事（1個目だけ） ===== */
+.card.featured {
+    padding: 16px;
+    background: #ffffff;
+}
+
+.card.featured .title {
+    font-size: 17px;
+}
+
+/* ===== モバイル ===== */
+@media (max-width: 600px) {
+    header h1 {
+        font-size: 16px;
+    }
+
+    .card {
+        padding: 12px;
+    }
+}
 </style>
 </head>
 
