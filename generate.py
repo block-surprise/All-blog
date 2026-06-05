@@ -35,7 +35,7 @@ def get_category(text):
 category = get_category(topic)
 
 # =====================
-# サムネ画像
+# サムネ
 # =====================
 def get_image(query):
     base = "https://source.unsplash.com/800x400/?"
@@ -44,46 +44,45 @@ def get_image(query):
 image_url = get_image(topic)
 
 # =====================
-# SEOタイトル生成
+# タイトル
 # =====================
 title_prompt = f"""
-あなたはSEO専門の編集者です。
-
-以下のニュースからクリックされるタイトルを1つ作ってください：
+あなたはSEO編集者です。
 
 テーマ：{topic}
 
-条件：
-- 30文字以内
-- 日本語
-- クリックしたくなる
-- 意外性を入れる
+30文字以内でクリックされるタイトルを作ってください。
 """
 
 title = model.generate_content(title_prompt).text.strip()
 
 # =====================
-# 本文生成
+# 本文（強化版）
 # =====================
 body_prompt = f"""
-あなたはプロのニュースライターです。
-
-以下のテーマで記事を書いてください：
+あなたはプロのテックメディア編集者です。
 
 テーマ：{topic}
 
+以下構成で記事を書いてください：
+
+1. なぜ重要か
+2. 背景
+3. 詳細解説
+4. 具体例
+5. 今後の影響
+6. まとめ（3行）
+
 条件：
-- 見出し付き（H2）
 - 8000〜12000文字
+- H2見出し
 - 初心者向け
-- 具体例を入れる
-- 自然な日本語
 """
 
 body = model.generate_content(body_prompt).text
 
 # =====================
-# 記事HTML生成
+# 記事HTML
 # =====================
 def build_html(title, body, category, image_url):
     return f"""
@@ -95,107 +94,94 @@ def build_html(title, body, category, image_url):
 <title>{title}</title>
 
 <style>
-body {
+body {{
     margin: 0;
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
     background: #f4f6f8;
     color: #111;
     line-height: 1.8;
-}
+}}
 
-/* ナビ */
-nav {
+.site-header {{
+    background: white;
+    padding: 18px;
+    font-weight: bold;
+    border-bottom: 1px solid #eee;
+}}
+
+nav {{
     background: #111;
     padding: 12px 16px;
     position: sticky;
     top: 0;
-    z-index: 10;
-}
+    display: flex;
+    gap: 14px;
+}}
 
-nav a {
+nav a {{
     color: white;
-    margin-right: 14px;
     text-decoration: none;
     font-size: 13px;
-    opacity: 0.9;
-}
+}}
 
-nav a:hover {
-    opacity: 1;
-}
-
-/* 全体レイアウト */
-.container {
+.container {{
     max-width: 780px;
     margin: auto;
     padding: 16px;
-}
+}}
 
-/* 記事カード */
-.article {
+.article {{
     background: white;
     padding: 20px;
     border-radius: 14px;
     box-shadow: 0 6px 18px rgba(0,0,0,0.06);
-}
+}}
 
-/* サムネ */
-.article img {
+.article img {{
     width: 100%;
     border-radius: 12px;
-    margin-bottom: 18px;
-}
+}}
 
-/* カテゴリラベル */
-.category {
+.category {{
     display: inline-block;
     font-size: 12px;
     padding: 4px 10px;
     border-radius: 999px;
     background: #eef2ff;
     color: #4f46e5;
-    margin-bottom: 10px;
-}
+    margin: 10px 0;
+}}
 
-/* タイトル */
-h1 {
+h1 {{
     font-size: 24px;
-    margin: 10px 0 18px;
-    letter-spacing: -0.02em;
-}
+}}
 
-/* 見出し */
-h2 {
-    margin-top: 28px;
-    font-size: 18px;
+h2 {{
     border-left: 4px solid #4f46e5;
     padding-left: 10px;
-}
+    font-size: 18px;
+    margin-top: 28px;
+}}
 
-/* 本文 */
-p {
-    margin: 12px 0;
-    font-size: 15px;
-}
+.related {{
+    margin-top: 30px;
+    padding: 14px;
+    background: #f9fafb;
+    border-radius: 12px;
+}}
 
-/* 強調 */
-strong {
-    font-weight: 600;
-}
-
-/* モバイル最適化 */
-@media (max-width: 600px) {
-    .container {
-        padding: 12px;
-    }
-
-    h1 {
-        font-size: 20px;
-    }
-}
+.related a {{
+    display: block;
+    color: #4f46e5;
+    text-decoration: none;
+    font-size: 14px;
+    margin: 4px 0;
+}}
 </style>
 </head>
 <body>
+
+<header class="site-header">ひとりテックニュース</header>
 
 <nav>
   <a href="/index.html">ホーム</a>
@@ -204,16 +190,18 @@ strong {
   <a href="/posts/news/">ニュース</a>
 </nav>
 
+<div class="container">
+
 <div class="article">
 
 <img src="{image_url}" />
 
-<div class="category">カテゴリ：{category}</div>
+<div class="category">{category}</div>
 
 <h1>{title}</h1>
 
-<div>
 {body}
+
 </div>
 
 </div>
@@ -223,11 +211,11 @@ strong {
 """
 
 # =====================
-# 保存
+# 保存（★修正：重複防止）
 # =====================
 os.makedirs(f"posts/{category}", exist_ok=True)
 
-date = datetime.now().strftime("%Y-%m-%d")
+date = datetime.now().strftime("%Y-%m-%d-%H%M%S")
 filename = f"posts/{category}/{date}.html"
 
 with open(filename, "w", encoding="utf-8") as f:
