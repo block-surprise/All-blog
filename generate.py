@@ -12,7 +12,40 @@ from datetime import datetime
 # APIキー
 # =====================
 genai.configure(api_key=os.environ["GOOGLE_API_KEY"])
-model = genai.GenerativeModel("gemini-2.5-flash")
+import time
+
+MODELS = [
+    "gemini-2.5-flash",
+    "Gemini 3.1 Flash Lite",
+    "Gemini 2.5 Flash Lite",
+    "Gemini 3 Flash",
+    "Gemini 3.5 Flash"
+]
+
+def generate_text(prompt):
+
+    for model_name in MODELS:
+
+        try:
+            print("using:", model_name)
+
+            model = genai.GenerativeModel(model_name)
+
+            response = model.generate_content(prompt)
+
+            if response and response.text:
+                return response.text.strip()
+
+        except Exception as e:
+            print("failed:", model_name, e)
+
+            # Quota超過なら少し待つ
+            if "429" in str(e):
+                time.sleep(10)
+
+            continue
+
+    return None
 
 
 # =====================
