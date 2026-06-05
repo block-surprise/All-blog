@@ -42,8 +42,7 @@ for a in articles:
     </a>
     """
 
-html = f"""
-<!DOCTYPE html>
+html = f"""<!DOCTYPE html>
 <html lang="ja">
 <head>
 <meta charset="UTF-8">
@@ -51,71 +50,100 @@ html = f"""
 <title>ひとりテックニュース</title>
 
 <style>
-body {{
+body {
     margin: 0;
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
     background: #f5f7fb;
     color: #111;
-}}
+}
 
-header {{
+.nav {
+    background: #111;
+    padding: 10px 14px;
+    display: flex;
+    gap: 14px;
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+}
+
+.nav a {
+    color: white;
+    text-decoration: none;
+    font-size: 13px;
+    opacity: 0.85;
+}
+
+.nav a:hover {
+    opacity: 1;
+}
+
+header {
     background: white;
     padding: 18px;
     border-bottom: 1px solid #eee;
-    position: sticky;
-    top: 0;
-}}
+}
 
-header h1 {{
+header h1 {
     margin: 0;
     font-size: 18px;
-}}
+}
 
-.container {{
+.container {
     max-width: 800px;
     margin: auto;
     padding: 12px;
-}}
+}
 
-.card {{
+.card {
     display: block;
     background: white;
     margin: 12px 0;
-    padding: 14px;
-    border-radius: 14px;
-    box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+    padding: 16px;
+    border-radius: 16px;
+    box-shadow: 0 6px 18px rgba(0,0,0,0.06);
     text-decoration: none;
     color: inherit;
     transition: 0.2s;
-}}
+    border-left: 4px solid #4f46e5;
+}
 
-.card:hover {{
-    transform: translateY(-2px);
-}}
+.card:hover {
+    transform: translateY(-3px);
+}
 
-.tag {{
+.tag {
     display: inline-block;
-    color: white;
     font-size: 11px;
-    padding: 3px 8px;
-    border-radius: 20px;
+    padding: 4px 10px;
+    border-radius: 999px;
     margin-bottom: 8px;
-}}
+    background: #eef2ff;
+    color: #4f46e5;
+    font-weight: 600;
+}
 
-.title {{
+.title {
     font-size: 16px;
     font-weight: 600;
     margin-bottom: 6px;
-}}
+}
 
-.meta {{
+.meta {
     font-size: 12px;
     color: #888;
-}}
+}
 </style>
 
 </head>
 <body>
+
+<nav class="nav">
+  <a href="/index.html">ホーム</a>
+  <a href="/posts/ai/">AI</a>
+  <a href="/posts/gadgets/">ガジェット</a>
+  <a href="/posts/news/">ニュース</a>
+</nav>
 
 <header>
 <h1>ひとりテックニュース</h1>
