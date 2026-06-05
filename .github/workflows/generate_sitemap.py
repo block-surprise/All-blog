@@ -1,27 +1,29 @@
 import os
 
-BASE_URL = "https://your-github-username.github.io/your-repo"
-
+BASE_URL = "https://YOUR_USERNAME.github.io/YOUR_REPO"
 POST_DIR = "posts"
 
-files = sorted(os.listdir(POST_DIR))
+files = sorted(os.listdir(POST_DIR), reverse=True)
 
 urls = ""
 
 for f in files:
     if f.endswith(".md"):
         urls += f"""
-<url>
-  <loc>{BASE_URL}/posts/{f}</loc>
-</url>
+  <url>
+    <loc>{BASE_URL}/posts/{f}</loc>
+  </url>
 """
 
 xml = f"""<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-<url>
-  <loc>{BASE_URL}</loc>
-</url>
+
+  <url>
+    <loc>{BASE_URL}</loc>
+  </url>
+
 {urls}
+
 </urlset>
 """
 
