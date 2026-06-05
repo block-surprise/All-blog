@@ -3,6 +3,7 @@ import random
 import feedparser
 import urllib.parse
 import requests
+import hashlib
 import google.generativeai as genai
 from datetime import datetime
 
@@ -15,15 +16,18 @@ model = genai.GenerativeModel("gemini-2.5-flash")
 
 
 # =====================
-# RSSトレンド取得
+# RSS取得
 # =====================
 rss_url = "https://news.google.com/rss?hl=ja&gl=JP&ceid=JP:ja"
 feed = feedparser.parse(rss_url)
 
+if not feed.entries:
+    topic = "最新テックニュース"
+else:
+    topic = random.choice(feed.entries[:10]).title
 
-
-# ノイズ除去（重要）
-clean_topic = topic.split(" - ")[0].split("｜")[0]
+# ノイズ除去
+clean_topic = topic.split(" - ")[0].split("｜")[0].strip()
 
 
 # =====================
@@ -42,29 +46,49 @@ def get_category(text):
 category = get_category(clean_topic)
 
 
+# =====================
+# 画像（保険3段階）
+# =====================
+
+def get_wikipedia_image(query):
+    try:
+        url = "https://ja.wikipedia.org/api/rest_v1/page/summary/" + urllib.parse.quote(query)
+        res = requests.get(url, timeout=5).json()
+
+        if "thumbnail" in res and res["thumbnail"]:
+            return res["thumbnail"]["source"]
+    except:
+        pass
+    return None
+
+
+def get_unsplash_image(query):
+    try:
+        return f"https://source.unsplash.com/800x400/?{urllib.parse.quote(query)}"
+    except:
+        return None
+
+
 def get_picsum_image(query):
-    import hashlib
     seed = hashlib.md5(query.encode()).hexdigest()[:10]
     return f"https://picsum.photos/seed/{seed}/800/400"
 
 
 def get_image(query):
-    # 1. Wikipedia
     img = get_wikipedia_image(query)
     if img:
         return img
 
-    # 2. Unsplash
-    try:
-        return f"https://source.unsplash.com/800x400/?{urllib.parse.quote(query)}"
-    except:
-        pass
+    img = get_unsplash_image(query)
+    if img:
+        return img
 
-    # 3. 最終保険（絶対出る）
     return get_picsum_image(query)
 
 
 image_url = get_image(clean_topic)
+
+
 # =====================
 # タイトル生成
 # =====================
@@ -73,27 +97,22 @@ title_prompt = f"""
 
 テーマ：{clean_topic}
 
-30文字以内でクリックされるタイトルを作ってください。
-
-ルール：
-- 30文字以内
-- 日本語
-- タイトルだけ出力
-- 記号・補足禁止
+30文字以内のクリックされるタイトルを1つだけ出力してください。
+記号・補足・説明は禁止。
 """
 
-title = model.generate_content(title_prompt).text.strip()
+title = model.generate_content(title_prompt).text.strip().replace("\n", "")
 
 
 # =====================
-# 本文（HTMLで生成）
+# 本文生成（HTML）
 # =====================
 body_prompt = f"""
 あなたはプロのテックメディア編集者です。
 
 テーマ：{clean_topic}
 
-以下構成でHTMLで書いてください：
+以下をHTMLで書いてください：
 
 <h2>なぜ重要か</h2>
 <p></p>
@@ -116,11 +135,11 @@ body_prompt = f"""
 条件：
 - 1500〜3500文字
 - HTMLのみ
-- 説明禁止
-- ```htmlなどは書かないでください
+- ```禁止
 """
 
 body = model.generate_content(body_prompt).text
+body = body.replace("```html", "").replace("```", "")
 
 
 # =====================
@@ -144,60 +163,37 @@ body {{
     line-height: 1.8;
 }}
 
-.site-header {{
+header {{
     background: white;
-    padding: 18px;
-    font-weight: bold;
+    padding: 16px;
     border-bottom: 1px solid #eee;
+    font-weight: bold;
 }}
 
 .nav {{
     background: #111;
-    padding: 12px 18px;
+    padding: 10px 14px;
     display: flex;
-    gap: 18px;
+    gap: 12px;
     position: sticky;
     top: 0;
-    z-index: 1000;
-    align-items: center;
 }}
 
 .nav a {{
     color: white;
     text-decoration: none;
-    font-size: 14px;
-    font-weight: 600;
-    opacity: 0.85;
-    padding: 6px 10px;
-    border-radius: 8px;
-    transition: 0.2s;
+    font-size: 13px;
 }}
 
-.nav a:hover {{
-    opacity: 1;
-    background: rgba(255,255,255,0.12);
-}}
-@media (max-width: 600px) {{
-    .nav {
-        overflow-x: auto;
-        white-space: nowrap;
-        gap: 10px;
-    }
-
-    .nav a {
-        font-size: 13px;
-        flex-shrink: 0;
-    }
-}}
 .container {{
     max-width: 780px;
     margin: auto;
-    padding: 16px;
+    padding: 14px;
 }}
 
 .article {{
     background: white;
-    padding: 20px;
+    padding: 18px;
     border-radius: 14px;
     box-shadow: 0 6px 18px rgba(0,0,0,0.06);
 }}
@@ -221,15 +217,16 @@ h2 {{
     border-left: 4px solid #4f46e5;
     padding-left: 10px;
     font-size: 18px;
-    margin-top: 28px;
+    margin-top: 26px;
 }}
 </style>
 </head>
+
 <body>
 
-<header class="site-header">ひとりテックニュース</header>
+<header>ひとりテックニュース</header>
 
-<nav>
+<nav class="nav">
   <a href="/index.html">ホーム</a>
   <a href="/posts/ai/">AI</a>
   <a href="/posts/gadgets/">ガジェット</a>
@@ -237,7 +234,6 @@ h2 {{
 </nav>
 
 <div class="container">
-
 <div class="article">
 
 <img src="{image_url}" alt="{title}" loading="lazy">
@@ -249,7 +245,6 @@ h2 {{
 {body}
 
 </div>
-
 </div>
 
 </body>
