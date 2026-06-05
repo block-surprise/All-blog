@@ -1,5 +1,6 @@
 name: AI Blog Generator
-
+permissions:
+  contents: write
 on:
   schedule:
     - cron: "0 * * * *"
