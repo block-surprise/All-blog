@@ -47,7 +47,7 @@ for root, dirs, files in os.walk(POST_DIR):
             color = "#dc2626"
 
         # =====================
-        # 日時処理（ファイル名優先）
+        # 日時（ファイル名優先）
         # =====================
         filename = os.path.basename(path)
 
@@ -56,15 +56,14 @@ for root, dirs, files in os.walk(POST_DIR):
                 filename.replace(".html", ""),
                 "%Y-%m-%d-%H%M%S"
             )
-
-            time_str = dt.strftime("%m-%d %H:%M")
             ts = dt.timestamp()
+            time_str = dt.strftime("%m-%d %H:%M")
 
         except:
             ts = os.path.getmtime(path)
             time_str = datetime.fromtimestamp(ts).strftime("%m-%d %H:%M")
 
-        # ★ここが超重要（追加忘れがバグ原因）
+        # ★ここ重要：必ず追加
         articles.append({
             "title": title,
             "path": path,
@@ -76,7 +75,7 @@ for root, dirs, files in os.walk(POST_DIR):
 
 
 # =====================
-# 並び替え（新しい順）
+# ソート
 # =====================
 articles = sorted(articles, key=lambda x: x["ts"], reverse=True)
 
@@ -85,7 +84,6 @@ articles = sorted(articles, key=lambda x: x["ts"], reverse=True)
 # カード生成
 # =====================
 cards = ""
-
 for a in articles:
     cards += f"""
     <a class="card" href="{a['path']}">
@@ -97,7 +95,7 @@ for a in articles:
 
 
 # =====================
-# HTML生成
+# HTML
 # =====================
 html = f"""
 <!DOCTYPE html>
@@ -115,7 +113,6 @@ body {{
     color: #111;
 }}
 
-/* ナビ */
 .nav {{
     background: #111;
     padding: 12px 18px;
@@ -123,7 +120,6 @@ body {{
     gap: 14px;
     position: sticky;
     top: 0;
-    z-index: 1000;
     overflow-x: auto;
 }}
 
@@ -143,7 +139,6 @@ body {{
     background: rgba(255,255,255,0.12);
 }}
 
-/* ヘッダー */
 header {{
     background: white;
     padding: 18px;
@@ -156,14 +151,12 @@ header h1 {{
     font-weight: 700;
 }}
 
-/* コンテナ */
 .container {{
     max-width: 780px;
     margin: auto;
     padding: 10px 12px;
 }}
 
-/* カード */
 .card {{
     display: block;
     background: white;
@@ -189,7 +182,6 @@ header h1 {{
 .title {{
     font-size: 15px;
     font-weight: 600;
-    margin-bottom: 4px;
 }}
 
 .meta {{
@@ -197,7 +189,6 @@ header h1 {{
     color: #888;
 }}
 
-/* モバイル */
 @media (max-width: 600px) {{
     header h1 {{
         font-size: 16px;
@@ -233,5 +224,108 @@ header h1 {{
 
 with open("index.html", "w", encoding="utf-8") as f:
     f.write(html)
+    # =====================
+# カテゴリページ生成
+# =====================
+
+def build_category_page(category_name, articles, color):
+    cards = ""
+
+    for a in articles:
+        cards += f"""
+        <a class="card" href="{a['path']}">
+            <div class="tag" style="background:{a['color']}">{a['cat']}</div>
+            <div class="title">{a['title']}</div>
+            <div class="meta">{a['time']}</div>
+        </a>
+        """
+
+    html = f"""
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>{category_name}</title>
+
+<style>
+body {{
+    margin: 0;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    background: #f5f7fb;
+}}
+
+.container {{
+    max-width: 780px;
+    margin: auto;
+    padding: 10px 12px;
+}}
+
+.card {{
+    display: block;
+    background: white;
+    padding: 14px;
+    border-bottom: 1px solid #eee;
+    text-decoration: none;
+    color: inherit;
+}}
+
+.tag {{
+    display: inline-block;
+    font-size: 11px;
+    padding: 3px 8px;
+    border-radius: 999px;
+    color: white;
+}}
+
+.title {{
+    font-size: 15px;
+    font-weight: 600;
+}}
+
+.meta {{
+    font-size: 12px;
+    color: #888;
+}}
+
+header {{
+    background: white;
+    padding: 16px;
+    border-bottom: 1px solid #eee;
+}}
+</style>
+</head>
+
+<body>
+
+<header>
+<h1>{category_name}</h1>
+</header>
+
+<div class="container">
+{cards}
+</div>
+
+</body>
+</html>
+"""
+
+    os.makedirs(f"posts/{category_name.lower()}", exist_ok=True)
+
+    with open(f"posts/{category_name.lower()}/index.html", "w", encoding="utf-8") as f:
+        f.write(html)
+
+
+# =====================
+# フィルタして生成
+# =====================
+
+ai_articles = [a for a in articles if a["cat"] == "AI"]
+gadgets_articles = [a for a in articles if a["cat"] == "ガジェット"]
+news_articles = [a for a in articles if a["cat"] == "ニュース"]
+
+build_category_page("AI", ai_articles, "#4f46e5")
+build_category_page("ガジェット", gadgets_articles, "#059669")
+build_category_page("ニュース", news_articles, "#dc2626")
 
 print("updated")
