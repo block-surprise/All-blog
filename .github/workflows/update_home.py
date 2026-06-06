@@ -33,6 +33,8 @@ for root, dirs, files in os.walk(POST_DIR):
 
         path = os.path.join(root, file).replace("\\", "/")
         title = extract_title(path)
+        if file == "index.html":
+    continue
 
         # ★ここから全部 for の中
         if "/ai/" in path:
