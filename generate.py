@@ -350,7 +350,11 @@ h2 {{
 # =====================
 os.makedirs(f"posts/{category}", exist_ok=True)
 
-date = datetime.now().strftime("%Y-%m-%d-%H%M%S")
+from zoneinfo import ZoneInfo
+
+date = datetime.now(
+    ZoneInfo("Asia/Tokyo")
+).strftime("%Y-%m-%d-%H%M%S")
 filename = f"posts/{category}/{date}.html"
 
 with open(filename, "w", encoding="utf-8") as f:
