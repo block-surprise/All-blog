@@ -315,7 +315,7 @@ h2 {{
 <div class="container">
 <div class="article">
 
-<img src="{image_url}" alt="{title}" loading="lazy">
+{image_html}
 
 <div class="category">{category}</div>
 
