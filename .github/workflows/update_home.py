@@ -250,11 +250,11 @@ header h1 {{
 </nav>
 <div class="keywords">
   <a href="/ai/">AI</a>
-  <a href="/search?q=iphone">iPhone</a>
-  <a href="/search?q=openai">OpenAI</a>
-  <a href="/search?q=sports">スポーツ</a>
-  <a href="/search?q=train">電車</a>
-  <a href="/search?q=game">ゲーム</a>
+  <a href="/search?q=iPhone">iPhone</a>
+  <a href="/search?q=OpenAI">OpenAI</a>
+  <a href="/search?q=スポーツ">スポーツ</a>
+  <a href="/search?q=電車">電車</a>
+  <a href="/search?q=ゲーム">ゲーム</a>
 </div>
 
 <div class="container">
