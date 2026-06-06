@@ -50,32 +50,35 @@ else:
     cat = "news"
     label = "ニュース"
     color = "#dc2626"
-        # =====================
-        # 日時（ファイル名優先）
-        # =====================
-    filename = os.path.basename(path)
 
-     try:
-            dt = datetime.strptime(
-                filename.replace(".html", ""),
-                "%Y-%m-%d-%H%M%S"
-            )
-            ts = dt.timestamp()
-            time_str = dt.strftime("%m-%d %H:%M")
 
-     except:
-            ts = os.path.getmtime(path)
-            time_str = datetime.fromtimestamp(ts).strftime("%m-%d %H:%M")
+# =====================
+# 日時（ファイル名優先）
+# =====================
+filename = os.path.basename(path)
 
-        # ★ここ重要：必ず追加
-    articles.append({
-            "title": title,
-            "path": path,
-            "cat": cat,
-            "color": color,
-            "time": time_str,
-            "ts": ts
-        })
+try:
+    dt = datetime.strptime(
+        filename.replace(".html", ""),
+        "%Y-%m-%d-%H%M%S"
+    )
+    ts = dt.timestamp()
+    time_str = dt.strftime("%m-%d %H:%M")
+
+except:
+    ts = os.path.getmtime(path)
+    time_str = datetime.fromtimestamp(ts).strftime("%m-%d %H:%M")
+
+
+# ★ここ重要：必ず追加
+articles.append({
+    "title": title,
+    "path": path,
+    "cat": cat,
+    "color": color,
+    "time": time_str,
+    "ts": ts
+})
 
 
 # =====================
