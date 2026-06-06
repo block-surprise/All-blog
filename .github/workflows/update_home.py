@@ -158,23 +158,38 @@ header h1 {{
     font-size: 18px;
     font-weight: 700;
 }}
-.keywords {{
-    display: flex;
-    overflow-x: auto;
-    gap: 8px;
-    padding: 10px;
+.keywords-section {{
     background: white;
+    padding: 14px;
     border-bottom: 1px solid #eee;
 }}
 
-.keywords a {{
-    white-space: nowrap;
-    font-size: 12px;
-    padding: 6px 10px;
-    border-radius: 999px;
+.keywords-title {{
+    font-size: 13px;
+    margin: 0 0 10px 0;
+    color: #666;
+}}
+
+.keywords-grid {{
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 8px;
+}}
+
+.keywords-grid a {{
+    display: block;
+    text-align: center;
+    padding: 10px 8px;
+    border-radius: 10px;
     background: #f1f5f9;
     text-decoration: none;
     color: #111;
+    font-size: 12px;
+    transition: 0.15s;
+}}
+
+.keywords-grid a:hover {{
+    background: #e2e8f0;
 }}
 .container {{
     max-width: 780px;
@@ -253,13 +268,17 @@ header h1 {{
   <a href="/posts/gadgets/">ガジェット</a>
   <a href="/posts/news/">ニュース</a>
 </nav>
-<div class="keywords">
-  <a href="/ai/">AI</a>
-  <a href="/search/iPhone">iPhone</a>
-  <a href="/search/OpenAI">OpenAI</a>
-  <a href="/search/スポーツ">スポーツ</a>
-  <a href="/search/電車">電車</a>
-  <a href="/search/ゲーム">ゲーム</a>
+<div class="keywords-section">
+  <h2 class="keywords-title">おすすめキーワード</h2>
+
+  <div class="keywords-grid">
+    <a href="/search/iPhone">iPhone</a>
+    <a href="/search/OpenAI">OpenAI</a>
+    <a href="/search/スポーツ">スポーツ</a>
+    <a href="/search/電車">電車</a>
+    <a href="/search/ゲーム">ゲーム</a>
+    <a href="/search/AI">AI</a>
+  </div>
 </div>
 
 <div class="container">
