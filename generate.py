@@ -80,41 +80,50 @@ category = get_category(clean_topic)
 
 
 # =====================
-# 画像（保険3段階）
+# 画像（Wikipedia → Picsum）
 # =====================
+
+import re
 
 def get_wikipedia_image(query):
     try:
-        url = "https://ja.wikipedia.org/api/rest_v1/page/summary/" + urllib.parse.quote(query)
-        res = requests.get(url, timeout=5).json()
+        url = (
+            "https://ja.wikipedia.org/api/rest_v1/page/summary/"
+            + urllib.parse.quote(query)
+        )
 
-        if "thumbnail" in res and res["thumbnail"]:
-            return res["thumbnail"]["source"]
-    except:
-        pass
+        res = requests.get(url, timeout=5)
+
+        if res.status_code != 200:
+            return None
+
+        data = res.json()
+
+        if "thumbnail" in data:
+            return data["thumbnail"]["source"]
+
+    except Exception as e:
+        print("wiki image error:", e)
+
     return None
 
 
-
-
-
 def get_picsum_image(query):
-    seed = hashlib.md5(query.encode()).hexdigest()[:10]
+    seed = hashlib.md5(query.encode("utf-8")).hexdigest()[:10]
     return f"https://picsum.photos/seed/{seed}/800/400"
 
 
 def get_image(query):
+
     img = get_wikipedia_image(query)
+
     if img:
+        print("Wikipedia image found")
         return img
 
-    img = get_unsplash_image(query)
-    if img:
-        return img
-
+    print("Using Picsum fallback")
     return get_picsum_image(query)
 
-import re
 
 def make_image_query(title):
 
@@ -122,16 +131,32 @@ def make_image_query(title):
     if m:
         return m.group(1)
 
-    title = title.split("、")[0]
-    title = title.split("。")[0]
-    title = title.split("…")[0]
+    title = re.sub(r'（.*?）', '', title)
+    title = re.sub(r'\(.*?\)', '', title)
 
-    return title[:15]
+    separators = [
+        "、",
+        "。",
+        "…",
+        "-",
+        "｜",
+        ":",
+        "："
+    ]
+
+    for s in separators:
+        title = title.split(s)[0]
+
+    return title.strip()[:15]
+
+
 image_query = make_image_query(clean_topic)
 
 print("image query:", image_query)
 
 image_url = get_image(image_query)
+
+print("image url:", image_url)
 # =====================
 # タイトル生成
 # =====================
