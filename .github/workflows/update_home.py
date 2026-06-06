@@ -42,18 +42,22 @@ for root, dirs, files in os.walk(POST_DIR):
             cat = "ニュース"
             color = "#dc2626"
 
-        # 更新時間
-        ts = os.path.getmtime(path)
-        time = datetime.fromtimestamp(ts).strftime("%m-%d %H:%M")
+ # 更新時間（ファイル名から取得）
 
-        articles.append({
-            "title": title,
-            "path": path,
-            "cat": cat,
-            "color": color,
-            "time": time,
-            "ts": ts
-        })
+filename = os.path.basename(path)
+
+try:
+    dt = datetime.strptime(
+        filename.replace(".html", ""),
+        "%Y-%m-%d-%H%M%S"
+    )
+
+    time = dt.strftime("%m-%d %H:%M")
+    ts = dt.timestamp()
+
+except:
+    ts = os.path.getmtime(path)
+    time = datetime.fromtimestamp(ts).strftime("%m-%d %H:%M")
 
 # 新しい順
 articles = sorted(articles, key=lambda x: x["ts"], reverse=True)
