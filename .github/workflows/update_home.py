@@ -77,15 +77,15 @@ html = f"""<!DOCTYPE html>
 <title>ひとりテックニュース</title>
 
 <style>
-body {
+body {{
     margin: 0;
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
     background: #f5f7fb;
     color: #111;
-}
+}}
 
 /* ===== ナビ ===== */
-.nav {
+.nav {{
     background: #111;
     padding: 12px 18px;
     display: flex;
@@ -95,9 +95,9 @@ body {
     z-index: 1000;
     align-items: center;
     overflow-x: auto;
-}
+}}
 
-.nav a {
+.nav a {{
     color: white;
     text-decoration: none;
     font-size: 14px;
@@ -106,44 +106,44 @@ body {
     padding: 6px 10px;
     border-radius: 8px;
     white-space: nowrap;
-}
+}}
 
-.nav a:hover {
+.nav a:hover {{
     opacity: 1;
     background: rgba(255,255,255,0.12);
-}
+}}
 
 /* ===== ヘッダー（新聞っぽく） ===== */
-header {
+header {{
     background: white;
     padding: 18px;
     border-bottom: 1px solid #eee;
-}
+}}
 
-header h1 {
+header h1 {{
     margin: 0;
     font-size: 18px;
     font-weight: 700;
-}
+}}
 
 /* ===== コンテナ ===== */
-.container {
+.container {{
     max-width: 780px;
     margin: auto;
     padding: 10px 12px;
-}
+}}
 
 /* ===== セクション（重要） ===== */
-.section-title {
+.section-title {{
     font-size: 13px;
     font-weight: 700;
     color: #666;
     margin: 18px 0 8px;
     padding-left: 6px;
-}
+}}
 
 /* ===== 記事リスト型（カードやめる） ===== */
-.card {
+.card {{
     display: block;
     background: white;
     padding: 14px 14px;
@@ -151,56 +151,56 @@ header h1 {
     text-decoration: none;
     color: inherit;
     transition: 0.15s;
-}
+}}
 
-.card:hover {
+.card:hover {{
     background: #f9fafb;
-}
+}}
 
 /* タグ */
-.tag {
+.tag {{
     display: inline-block;
     font-size: 11px;
     padding: 3px 8px;
     border-radius: 999px;
     color: white;
     margin-bottom: 6px;
-}
+}}
 
 /* タイトル */
-.title {
+.title {{
     font-size: 15px;
     font-weight: 600;
     line-height: 1.4;
     margin-bottom: 4px;
-}
+}}
 
 /* メタ */
-.meta {
+.meta {{
     font-size: 12px;
     color: #888;
-}
+}}
 
 /* ===== 強調記事（1個目だけ） ===== */
-.card.featured {
+.card.featured {{
     padding: 16px;
     background: #ffffff;
-}
+}}
 
-.card.featured .title {
+.card.featured .title {{
     font-size: 17px;
-}
+}}
 
 /* ===== モバイル ===== */
-@media (max-width: 600px) {
-    header h1 {
+@media (max-width: 600px) {{
+    header h1 {{
         font-size: 16px;
-    }
+    }}
 
-    .card {
+    .card {{
         padding: 12px;
-    }
-}
+    }}
+}}
 </style>
 </head>
 
