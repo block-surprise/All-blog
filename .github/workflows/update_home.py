@@ -35,20 +35,21 @@ for root, dirs, files in os.walk(POST_DIR):
 
         title = extract_title(path)
 
-        # カテゴリ判定
-        if "/ai/" in path:
+     # カテゴリ判定
+if "/ai/" in path:
     cat = "ai"
     label = "AI"
     color = "#4f46e5"
+
 elif "/gadgets/" in path:
     cat = "gadgets"
     label = "ガジェット"
     color = "#059669"
+
 else:
     cat = "news"
     label = "ニュース"
     color = "#dc2626"
-
         # =====================
         # 日時（ファイル名優先）
         # =====================
