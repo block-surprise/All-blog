@@ -95,11 +95,7 @@ def get_wikipedia_image(query):
     return None
 
 
-def get_unsplash_image(query):
-    try:
-        return f"https://source.unsplash.com/800x400/?{urllib.parse.quote(query)}"
-    except:
-        return None
+
 
 
 def get_picsum_image(query):
