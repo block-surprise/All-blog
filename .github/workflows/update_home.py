@@ -153,7 +153,24 @@ header h1 {{
     font-size: 18px;
     font-weight: 700;
 }}
+.keywords {{
+    display: flex;
+    overflow-x: auto;
+    gap: 8px;
+    padding: 10px;
+    background: white;
+    border-bottom: 1px solid #eee;
+}}
 
+.keywords a {{
+    white-space: nowrap;
+    font-size: 12px;
+    padding: 6px 10px;
+    border-radius: 999px;
+    background: #f1f5f9;
+    text-decoration: none;
+    color: #111;
+}}
 .container {{
     max-width: 780px;
     margin: auto;
@@ -172,7 +189,22 @@ header h1 {{
 .card:hover {{
     background: #f9fafb;
 }}
+.categories {{
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 8px;
+    padding: 10px;
+}}
 
+.categories a {{
+    background: white;
+    padding: 12px;
+    text-align: center;
+    border-radius: 10px;
+    text-decoration: none;
+    font-size: 13px;
+    border: 1px solid #eee;
+}}
 .tag {{
     display: inline-block;
     font-size: 11px;
@@ -216,11 +248,24 @@ header h1 {{
   <a href="/posts/gadgets/">ガジェット</a>
   <a href="/posts/news/">ニュース</a>
 </nav>
-
-<div class="container">
-{cards}
+<div class="keywords">
+  <a href="#">AI</a>
+  <a href="#">iPhone</a>
+  <a href="#">OpenAI</a>
+  <a href="#">半導体</a>
+  <a href="#">スタートアップ</a>
+  <a href="#">ゲーム</a>
 </div>
 
+<div class="container">
+
+{cards}
+</div>
+<div class="categories">
+  <a href="/posts/ai/">AIニュース</a>
+  <a href="/posts/gadgets/">ガジェット</a>
+  <a href="/posts/news/">国内ニュース</a>
+</div>
 </body>
 </html>
 """
