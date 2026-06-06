@@ -35,17 +35,20 @@ for root, dirs, files in os.walk(POST_DIR):
         title = extract_title(path)
 
         # カテゴリ判定
-        if "/ai/" in path:
-            cat = "AI"
-            color = "#4f46e5"
+if "/ai/" in path:
+    cat = "AI"
+    slug = "ai"
+    color = "#4f46e5"
 
-        elif "/gadgets/" in path:
-            cat = "ガジェット"
-            color = "#059669"
+elif "/gadgets/" in path:
+    cat = "ガジェット"
+    slug = "gadgets"
+    color = "#059669"
 
-        else:
-            cat = "ニュース"
-            color = "#dc2626"
+else:
+    cat = "ニュース"
+    slug = "news"
+    color = "#dc2626"
 
         # =====================
         # 日時
@@ -65,14 +68,15 @@ for root, dirs, files in os.walk(POST_DIR):
             time_str = datetime.fromtimestamp(ts).strftime("%m-%d %H:%M")
 
         # ★追加
-        articles.append({
-            "title": title,
-            "path": path,
-            "cat": cat,
-            "color": color,
-            "time": time_str,
-            "ts": ts
-        })
+articles.append({
+    "title": title,
+    "path": path,
+    "cat": cat,
+    "slug": slug,
+    "color": color,
+    "time": time_str,
+    "ts": ts
+})
 
 
 # =====================
@@ -300,7 +304,7 @@ with open("index.html", "w", encoding="utf-8") as f:
 # カテゴリページ生成
 # =====================
 
-def build_category_page(category_name, articles, color):
+def build_category_page(category_name, articles, color, slug):
     cards = ""
 
     for a in articles:
@@ -341,6 +345,31 @@ body {{
     text-decoration: none;
     color: inherit;
 }}
+.nav {{
+    background: #111;
+    padding: 12px 18px;
+    display: flex;
+    gap: 14px;
+    position: sticky;
+    top: 0;
+    overflow-x: auto;
+}}
+
+.nav a {{
+    color: white;
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 600;
+    opacity: 0.85;
+    padding: 6px 10px;
+    border-radius: 8px;
+    white-space: nowrap;
+}}
+
+.nav a:hover {{
+    opacity: 1;
+    background: rgba(255,255,255,0.12);
+}}
 
 .tag {{
     display: inline-block;
@@ -373,7 +402,12 @@ header {{
 <header>
 <h1>{category_name}</h1>
 </header>
-
+<nav class="nav">
+  <a href="/index.html">ホーム</a>
+  <a href="/posts/ai/">AI</a>
+  <a href="/posts/gadgets/">ガジェット</a>
+  <a href="/posts/news/">ニュース</a>
+</nav>
 <div class="container">
 {cards}
 </div>
@@ -382,9 +416,9 @@ header {{
 </html>
 """
 
-    os.makedirs(f"posts/{category_name.lower()}", exist_ok=True)
+os.makedirs(f"posts/{slug}", exist_ok=True)
 
-    with open(f"posts/{category_name.lower()}/index.html", "w", encoding="utf-8") as f:
+with open(f"posts/{slug}/index.html", "w", encoding="utf-8") as f:
         f.write(html)
 
 
@@ -396,8 +430,7 @@ ai_articles = [a for a in articles if a["cat"] == "AI"]
 gadgets_articles = [a for a in articles if a["cat"] == "ガジェット"]
 news_articles = [a for a in articles if a["cat"] == "ニュース"]
 
-build_category_page("AI", ai_articles, "#4f46e5")
-build_category_page("ガジェット", gadgets_articles, "#059669")
-build_category_page("ニュース", news_articles, "#dc2626")
-
+build_category_page("AI", ai_articles, "#4f46e5", "ai")
+build_category_page("ガジェット", gadgets_articles, "#059669", "gadgets")
+build_category_page("ニュース", news_articles, "#dc2626", "news")
 print("updated")
