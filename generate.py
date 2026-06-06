@@ -118,10 +118,22 @@ def get_image(query):
 
     return get_picsum_image(query)
 
+import re
 
-image_url = get_image(clean_topic)
+def make_image_query(title):
 
+    title = re.sub(r'「(.*?)」', r'\1', title)
 
+    title = title.split("、")[0]
+    title = title.split("。")[0]
+    title = title.split("…")[0]
+
+    return title[:20]
+image_query = make_image_query(clean_topic)
+
+print("image query:", image_query)
+
+image_url = get_image(image_query)
 # =====================
 # タイトル生成
 # =====================
