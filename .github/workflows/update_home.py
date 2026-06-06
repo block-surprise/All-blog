@@ -55,7 +55,7 @@ else:
         # =====================
     filename = os.path.basename(path)
 
-        try:
+     try:
             dt = datetime.strptime(
                 filename.replace(".html", ""),
                 "%Y-%m-%d-%H%M%S"
@@ -63,12 +63,12 @@ else:
             ts = dt.timestamp()
             time_str = dt.strftime("%m-%d %H:%M")
 
-        except:
+     except:
             ts = os.path.getmtime(path)
             time_str = datetime.fromtimestamp(ts).strftime("%m-%d %H:%M")
 
         # ★ここ重要：必ず追加
-        articles.append({
+    articles.append({
             "title": title,
             "path": path,
             "cat": cat,
