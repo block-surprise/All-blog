@@ -249,12 +249,12 @@ header h1 {{
   <a href="/posts/news/">ニュース</a>
 </nav>
 <div class="keywords">
-  <a href="#">AI</a>
-  <a href="#">iPhone</a>
-  <a href="#">OpenAI</a>
-  <a href="#">半導体</a>
-  <a href="#">スタートアップ</a>
-  <a href="#">ゲーム</a>
+  <a href="/ai/">AI</a>
+  <a href="/search/iphone.html">iPhone</a>
+  <a href="/search/openai.html">OpenAI</a>
+  <a href="/search/sports">スポーツ</a>
+  <a href="/search/train.html">電車</a>
+  <a href="/search/game">ゲーム</a>
 </div>
 
 <div class="container">
