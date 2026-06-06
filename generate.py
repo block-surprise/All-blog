@@ -122,13 +122,15 @@ import re
 
 def make_image_query(title):
 
-    title = re.sub(r'「(.*?)」', r'\1', title)
+    m = re.search(r'「(.*?)」', title)
+    if m:
+        return m.group(1)
 
     title = title.split("、")[0]
     title = title.split("。")[0]
     title = title.split("…")[0]
 
-    return title[:20]
+    return title[:15]
 image_query = make_image_query(clean_topic)
 
 print("image query:", image_query)
