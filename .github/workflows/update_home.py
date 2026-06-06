@@ -34,57 +34,45 @@ for root, dirs, files in os.walk(POST_DIR):
         path = os.path.join(root, file).replace("\\", "/")
         title = extract_title(path)
 
-        # カテゴリ判定
-# =====================
-# カテゴリ判定
-# =====================
-if "/ai/" in path:
-    cat = "AI"
-    slug = "ai"
-    color = "#4f46e5"
+        # ★ここから全部 for の中
+        if "/ai/" in path:
+            cat = "AI"
+            slug = "ai"
+            color = "#4f46e5"
 
-elif "/gadgets/" in path:
-    cat = "ガジェット"
-    slug = "gadgets"
-    color = "#059669"
+        elif "/gadgets/" in path:
+            cat = "ガジェット"
+            slug = "gadgets"
+            color = "#059669"
 
-else:
-    cat = "ニュース"
-    slug = "news"
-    color = "#dc2626"
+        else:
+            cat = "ニュース"
+            slug = "news"
+            color = "#dc2626"
 
+        filename = os.path.basename(path)
 
-# =====================
-# 日時
-# =====================
-filename = os.path.basename(path)
+        try:
+            dt = datetime.strptime(
+                filename.replace(".html", ""),
+                "%Y-%m-%d-%H%M%S"
+            )
+            ts = dt.timestamp()
+            time_str = dt.strftime("%m-%d %H:%M")
 
-try:
-    dt = datetime.strptime(
-        filename.replace(".html", ""),
-        "%Y-%m-%d-%H%M%S"
-    )
-    ts = dt.timestamp()
-    time_str = dt.strftime("%m-%d %H:%M")
+        except:
+            ts = os.path.getmtime(path)
+            time_str = datetime.fromtimestamp(ts).strftime("%m-%d %H:%M")
 
-except:
-    ts = os.path.getmtime(path)
-    time_str = datetime.fromtimestamp(ts).strftime("%m-%d %H:%M")
-
-
-# =====================
-# 追加（ここ重要）
-# =====================
-articles.append({
-    "title": title,
-    "path": path,
-    "cat": cat,
-    "slug": slug,
-    "color": color,
-    "time": time_str,
-    "ts": ts
-})
-
+        articles.append({
+            "title": title,
+            "path": path,
+            "cat": cat,
+            "slug": slug,
+            "color": color,
+            "time": time_str,
+            "ts": ts
+        })
 # =====================
 # ソート
 # =====================
