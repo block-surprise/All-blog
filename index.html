@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="ja">
 <head>
@@ -13,7 +14,6 @@ body {
     color: #111;
 }
 
-/* ===== ナビ ===== */
 .nav {
     background: #111;
     padding: 12px 18px;
@@ -21,8 +21,6 @@ body {
     gap: 14px;
     position: sticky;
     top: 0;
-    z-index: 1000;
-    align-items: center;
     overflow-x: auto;
 }
 
@@ -42,7 +40,6 @@ body {
     background: rgba(255,255,255,0.12);
 }
 
-/* ===== ヘッダー（新聞っぽく） ===== */
 header {
     background: white;
     padding: 18px;
@@ -55,38 +52,25 @@ header h1 {
     font-weight: 700;
 }
 
-/* ===== コンテナ ===== */
 .container {
     max-width: 780px;
     margin: auto;
     padding: 10px 12px;
 }
 
-/* ===== セクション（重要） ===== */
-.section-title {
-    font-size: 13px;
-    font-weight: 700;
-    color: #666;
-    margin: 18px 0 8px;
-    padding-left: 6px;
-}
-
-/* ===== 記事リスト型（カードやめる） ===== */
 .card {
     display: block;
     background: white;
-    padding: 14px 14px;
+    padding: 14px;
     border-bottom: 1px solid #eee;
     text-decoration: none;
     color: inherit;
-    transition: 0.15s;
 }
 
 .card:hover {
     background: #f9fafb;
 }
 
-/* タグ */
 .tag {
     display: inline-block;
     font-size: 11px;
@@ -96,31 +80,16 @@ header h1 {
     margin-bottom: 6px;
 }
 
-/* タイトル */
 .title {
     font-size: 15px;
     font-weight: 600;
-    line-height: 1.4;
-    margin-bottom: 4px;
 }
 
-/* メタ */
 .meta {
     font-size: 12px;
     color: #888;
 }
 
-/* ===== 強調記事（1個目だけ） ===== */
-.card.featured {
-    padding: 16px;
-    background: #ffffff;
-}
-
-.card.featured .title {
-    font-size: 17px;
-}
-
-/* ===== モバイル ===== */
 @media (max-width: 600px) {
     header h1 {
         font-size: 16px;
@@ -134,9 +103,11 @@ header h1 {
 </head>
 
 <body>
+
 <header>
 <h1>ひとりテックニュース</h1>
 </header>
+
 <nav class="nav">
   <a href="/index.html">ホーム</a>
   <a href="/posts/ai/">AI</a>
@@ -144,10 +115,68 @@ header h1 {
   <a href="/posts/news/">ニュース</a>
 </nav>
 
-
-
 <div class="container">
 
+    <a class="card" href="posts/news/2026-06-06-133536.html">
+        <div class="tag" style="background:#dc2626">ニュース</div>
+        <div class="title">京都で米人男性行方不明 顔写真公開 20歳</div>
+        <div class="meta">06-06 13:35</div>
+    </a>
+    
+    <a class="card" href="posts/news/2026-06-06-131509.html">
+        <div class="tag" style="background:#dc2626">ニュース</div>
+        <div class="title">高松塚キトラ古墳世界遺産に登録勧告</div>
+        <div class="meta">06-06 13:15</div>
+    </a>
+    
+    <a class="card" href="posts/news/2026-06-06-023504.html">
+        <div class="tag" style="background:#dc2626">ニュース</div>
+        <div class="title">21歳女に無期求刑強盗致傷悪質性</div>
+        <div class="meta">06-06 02:35</div>
+    </a>
+    
+    <a class="card" href="posts/news/2026-06-06-010522.html">
+        <div class="tag" style="background:#dc2626">ニュース</div>
+        <div class="title">札幌男子大学生殺害、21歳女に無期懲役を求刑</div>
+        <div class="meta">06-06 01:05</div>
+    </a>
+    
+    <a class="card" href="posts/news/2026-06-06-004932.html">
+        <div class="tag" style="background:#dc2626">ニュース</div>
+        <div class="title">益田和彦、栃木強盗殺人で国際赤手配</div>
+        <div class="meta">06-06 00:49</div>
+    </a>
+    
+    <a class="card" href="posts/news/2026-06-06-002530.html">
+        <div class="tag" style="background:#dc2626">ニュース</div>
+        <div class="title">奈良 飛鳥・藤原の宮都 世界遺産勧告</div>
+        <div class="meta">06-06 00:25</div>
+    </a>
+    
+    <a class="card" href="posts/news/2026-06-06-001300.html">
+        <div class="tag" style="background:#dc2626">ニュース</div>
+        <div class="title">奈良飛鳥藤原 いよいよ世界遺産登録へ勧告</div>
+        <div class="meta">06-06 00:13</div>
+    </a>
+    
+    <a class="card" href="posts/news/2026-06-05-130625.html">
+        <div class="tag" style="background:#dc2626">ニュース</div>
+        <div class="title">高市氏、中傷動画否定も「醜い言い訳」で支持率回復遠のく</div>
+        <div class="meta">06-05 13:06</div>
+    </a>
+    
+    <a class="card" href="posts/news/2026-06-05-125001.html">
+        <div class="tag" style="background:#dc2626">ニュース</div>
+        <div class="title">杉尾氏激怒！NHKニュース7は高市弁明ばかり</div>
+        <div class="meta">06-05 12:50</div>
+    </a>
+    
+    <a class="card" href="posts/news/2026-06-05-122328.html">
+        <div class="tag" style="background:#dc2626">ニュース</div>
+        <div class="title">「殺したい」集団暴行死の姉が法廷で極刑要求</div>
+        <div class="meta">06-05 12:23</div>
+    </a>
+    
 </div>
 
 </body>
