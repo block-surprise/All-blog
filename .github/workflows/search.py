@@ -1,4 +1,7 @@
 import os
+from flask import Flask, request
+
+app = Flask(__name__)
 
 # =====================
 # 検索マッチ関数
@@ -7,11 +10,11 @@ def match(query, a):
     q = query.lower()
 
     # タイトル検索
-    if q in a["title"].lower():
+    if q in a.get("title", "").lower():
         return True
 
     # 本文検索（あれば）
-    if "body" in a and a["body"]:
+    if a.get("body"):
         if q in a["body"].lower():
             return True
 
@@ -19,38 +22,35 @@ def match(query, a):
 
 
 # =====================
-# 検索ページ生成（完全版）
+# 検索HTML生成
 # =====================
-def build_search_page(query, articles):
+def build_search_html(query, articles):
 
     filtered = []
 
-    # ★ここで判定
     for a in articles:
         if match(query, a):
             filtered.append(a)
 
-    # 新しい順に並び替え（あれば）
-    filtered = sorted(filtered, key=lambda x: x["ts"], reverse=True)
+    filtered = sorted(filtered, key=lambda x: x.get("ts", 0), reverse=True)
 
     cards = ""
 
     for a in filtered:
         cards += f"""
         <a class="card" href="/{a['path']}">
-            <div class="tag" style="background:{a['color']}">{a['cat']}</div>
-            <div class="title">{a['title']}</div>
-            <div class="meta">{a['time']}</div>
+            <div class="tag" style="background:{a.get('color', '#999')}">{a.get('cat', '')}</div>
+            <div class="title">{a.get('title')}</div>
+            <div class="meta">{a.get('time', '')}</div>
         </a>
         """
 
-    html = f"""
+    return f"""
 <!DOCTYPE html>
 <html lang="ja">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
 <title>検索: {query}</title>
 
 <style>
@@ -100,7 +100,6 @@ header {{
     padding: 16px;
     border-bottom: 1px solid #eee;
 }}
-
 </style>
 </head>
 
@@ -118,9 +117,17 @@ header {{
 </html>
 """
 
-    os.makedirs("search", exist_ok=True)
 
-    with open(f"search/{query}.html", "w", encoding="utf-8") as f:
-        f.write(html)
+# =====================
+# /search?q= ルート
+# =====================
+@app.route("/search")
+def search():
+    q = request.args.get("q", "")
 
-    print("search page created:", query)
+    # articlesは外から渡す想定（generate.pyとかで作ってるやつ）
+    return build_search_html(q, articles)
+
+
+if __name__ == "__main__":
+    app.run(debug=True)
