@@ -108,9 +108,6 @@ def get_wikipedia_image(query):
     return None
 
 
-def get_picsum_image(query):
-    seed = hashlib.md5(query.encode("utf-8")).hexdigest()[:10]
-    return f"https://picsum.photos/seed/{seed}/800/400"
 
 
 def get_image(query):
@@ -121,9 +118,8 @@ def get_image(query):
         print("Wikipedia image found")
         return img
 
-    print("Using Picsum fallback")
-    return get_picsum_image(query)
-
+    print("No image found")
+    return None
 
 def make_image_query(title):
 
@@ -221,6 +217,14 @@ if body:
 # HTML生成
 # =====================
 def build_html(title, body, category, image_url):
+
+    image_html = ""
+
+    if image_url:
+        image_html = f'''
+<img src="{image_url}" alt="{title}" loading="lazy">
+'''
+
     return f"""
 <!DOCTYPE html>
 <html lang="ja">
