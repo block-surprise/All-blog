@@ -16,10 +16,10 @@ import time
 
 MODELS = [
     "gemini-2.5-flash",
-    "Gemini 3.1 Flash Lite",
-    "Gemini 2.5 Flash Lite",
-    "Gemini 3 Flash",
-    "Gemini 3.5 Flash"
+    "gemini-3.1-flash-lite",
+    "gemini-2.5-flash-lite",
+    "gemini-3-flash",
+    "gemini-3.5-flash"
 ]
 
 def generate_text(prompt):
@@ -134,7 +134,12 @@ title_prompt = f"""
 記号・補足・説明は禁止。
 """
 
-title = model.generate_content(title_prompt).text.strip().replace("\n", "")
+title = generate_text(title_prompt)
+
+if not title:
+    title = clean_topic
+
+title = title.replace("\n", "")
 
 
 # =====================
@@ -170,9 +175,11 @@ body_prompt = f"""
 - HTMLのみ
 - ```禁止
 """
+body = generate_text(body_prompt)
 
-body = model.generate_content(body_prompt).text
-body = body.replace("```html", "").replace("```", "")
+if body:
+
+    body = body.replace("```html", "").replace("```", "")
 
 
 # =====================
