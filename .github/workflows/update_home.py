@@ -53,7 +53,7 @@ else:
         # =====================
         # 日時（ファイル名優先）
         # =====================
-        filename = os.path.basename(path)
+    filename = os.path.basename(path)
 
         try:
             dt = datetime.strptime(
