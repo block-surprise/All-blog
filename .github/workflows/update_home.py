@@ -37,14 +37,17 @@ for root, dirs, files in os.walk(POST_DIR):
 
         # カテゴリ判定
         if "/ai/" in path:
-            cat = "AI"
-            color = "#4f46e5"
-        elif "/gadgets/" in path:
-            cat = "ガジェット"
-            color = "#059669"
-        else:
-            cat = "ニュース"
-            color = "#dc2626"
+    cat = "ai"
+    label = "AI"
+    color = "#4f46e5"
+elif "/gadgets/" in path:
+    cat = "gadgets"
+    label = "ガジェット"
+    color = "#059669"
+else:
+    cat = "news"
+    label = "ニュース"
+    color = "#dc2626"
 
         # =====================
         # 日時（ファイル名優先）
