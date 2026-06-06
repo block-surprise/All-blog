@@ -251,18 +251,32 @@ header {{
 
 .nav {{
     background: #111;
-    padding: 10px 14px;
+    padding: 12px 18px;
     display: flex;
-    gap: 12px;
+    gap: 14px;
     position: sticky;
     top: 0;
+    z-index: 1000;
+    align-items: center;
+    overflow-x: auto;
 }}
 
 .nav a {{
     color: white;
     text-decoration: none;
-    font-size: 13px;
+    font-size: 14px;
+    font-weight: 600;
+    opacity: 0.85;
+    padding: 6px 10px;
+    border-radius: 8px;
+    white-space: nowrap;
 }}
+
+.nav a:hover {{
+    opacity: 1;
+    background: rgba(255,255,255,0.12);
+}}
+
 
 .container {{
     max-width: 780px;
