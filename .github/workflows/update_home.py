@@ -31,13 +31,12 @@ for root, dirs, files in os.walk(POST_DIR):
         if not file.endswith(".html"):
             continue
 
-path = os.path.join(root, file).replace("\\", "/")
-title = extract_title(path)
+        path = os.path.join(root, file).replace("\\", "/")
+        title = extract_title(path)
 
-if file == "index.html":
-    continue
+        if file == "index.html":
+            continue
 
-        # ★ここから全部 for の中
         if "/ai/" in path:
             cat = "AI"
             slug = "ai"
