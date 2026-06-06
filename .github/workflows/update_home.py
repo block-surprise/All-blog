@@ -80,6 +80,13 @@ for root, dirs, files in os.walk(POST_DIR):
 # =====================
 articles = sorted(articles, key=lambda x: x["ts"], reverse=True)
 
+from search_builder import build_search_page
+
+keywords = ["ChatGPT", "iPhone", "OpenAI", "AI", "ニュース","電車","ゲーム","政治","事件","スポーツ"]
+
+for q in keywords:
+
+    build_search_page(q, articles)
 
 # =====================
 # カード生成
@@ -248,11 +255,11 @@ header h1 {{
 </nav>
 <div class="keywords">
   <a href="/ai/">AI</a>
-  <a href="/search?q=iPhone">iPhone</a>
-  <a href="/search?q=OpenAI">OpenAI</a>
-  <a href="/search?q=スポーツ">スポーツ</a>
-  <a href="/search?q=電車">電車</a>
-  <a href="/search?q=ゲーム">ゲーム</a>
+  <a href="/search/iPhone">iPhone</a>
+  <a href="/search/OpenAI">OpenAI</a>
+  <a href="/search/スポーツ">スポーツ</a>
+  <a href="/search/電車">電車</a>
+  <a href="/search/ゲーム">ゲーム</a>
 </div>
 
 <div class="container">
