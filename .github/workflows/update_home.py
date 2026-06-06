@@ -35,6 +35,9 @@ for root, dirs, files in os.walk(POST_DIR):
         title = extract_title(path)
 
         # カテゴリ判定
+# =====================
+# カテゴリ判定
+# =====================
 if "/ai/" in path:
     cat = "AI"
     slug = "ai"
@@ -50,24 +53,28 @@ else:
     slug = "news"
     color = "#dc2626"
 
-        # =====================
-        # 日時
-        # =====================
-        filename = os.path.basename(path)
 
-        try:
-            dt = datetime.strptime(
-                filename.replace(".html", ""),
-                "%Y-%m-%d-%H%M%S"
-            )
-            ts = dt.timestamp()
-            time_str = dt.strftime("%m-%d %H:%M")
+# =====================
+# 日時
+# =====================
+filename = os.path.basename(path)
 
-        except:
-            ts = os.path.getmtime(path)
-            time_str = datetime.fromtimestamp(ts).strftime("%m-%d %H:%M")
+try:
+    dt = datetime.strptime(
+        filename.replace(".html", ""),
+        "%Y-%m-%d-%H%M%S"
+    )
+    ts = dt.timestamp()
+    time_str = dt.strftime("%m-%d %H:%M")
 
-        # ★追加
+except:
+    ts = os.path.getmtime(path)
+    time_str = datetime.fromtimestamp(ts).strftime("%m-%d %H:%M")
+
+
+# =====================
+# 追加（ここ重要）
+# =====================
 articles.append({
     "title": title,
     "path": path,
@@ -77,7 +84,6 @@ articles.append({
     "time": time_str,
     "ts": ts
 })
-
 
 # =====================
 # ソート
