@@ -13,66 +13,130 @@ body {
     color: #111;
 }
 
+/* ===== ナビ ===== */
 .nav {
     background: #111;
-    padding: 10px 14px;
+    padding: 12px 18px;
     display: flex;
     gap: 14px;
     position: sticky;
     top: 0;
+    z-index: 1000;
+    align-items: center;
+    overflow-x: auto;
 }
 
 .nav a {
     color: white;
     text-decoration: none;
-    font-size: 13px;
+    font-size: 14px;
+    font-weight: 600;
+    opacity: 0.85;
+    padding: 6px 10px;
+    border-radius: 8px;
+    white-space: nowrap;
 }
 
+.nav a:hover {
+    opacity: 1;
+    background: rgba(255,255,255,0.12);
+}
+
+/* ===== ヘッダー（新聞っぽく） ===== */
 header {
     background: white;
     padding: 18px;
     border-bottom: 1px solid #eee;
 }
 
-.container {
-    max-width: 800px;
-    margin: auto;
-    padding: 12px;
+header h1 {
+    margin: 0;
+    font-size: 18px;
+    font-weight: 700;
 }
 
+/* ===== コンテナ ===== */
+.container {
+    max-width: 780px;
+    margin: auto;
+    padding: 10px 12px;
+}
+
+/* ===== セクション（重要） ===== */
+.section-title {
+    font-size: 13px;
+    font-weight: 700;
+    color: #666;
+    margin: 18px 0 8px;
+    padding-left: 6px;
+}
+
+/* ===== 記事リスト型（カードやめる） ===== */
 .card {
     display: block;
     background: white;
-    margin: 12px 0;
-    padding: 16px;
-    border-radius: 16px;
+    padding: 14px 14px;
+    border-bottom: 1px solid #eee;
     text-decoration: none;
     color: inherit;
+    transition: 0.15s;
 }
 
+.card:hover {
+    background: #f9fafb;
+}
+
+/* タグ */
 .tag {
     display: inline-block;
     font-size: 11px;
-    padding: 4px 10px;
+    padding: 3px 8px;
     border-radius: 999px;
     color: white;
-    margin-bottom: 8px;
+    margin-bottom: 6px;
 }
 
+/* タイトル */
 .title {
-    font-size: 16px;
+    font-size: 15px;
     font-weight: 600;
+    line-height: 1.4;
+    margin-bottom: 4px;
 }
 
+/* メタ */
 .meta {
     font-size: 12px;
     color: #888;
+}
+
+/* ===== 強調記事（1個目だけ） ===== */
+.card.featured {
+    padding: 16px;
+    background: #ffffff;
+}
+
+.card.featured .title {
+    font-size: 17px;
+}
+
+/* ===== モバイル ===== */
+@media (max-width: 600px) {
+    header h1 {
+        font-size: 16px;
+    }
+
+    .card {
+        padding: 12px;
+    }
 }
 </style>
 </head>
 
 <body>
-
+<header>
+<h1>ひとりテックニュース</h1>
+</header>
 <nav class="nav">
   <a href="/index.html">ホーム</a>
   <a href="/posts/ai/">AI</a>
@@ -80,28 +144,32 @@ header {
   <a href="/posts/news/">ニュース</a>
 </nav>
 
-<header>
-<h1>ひとりテックニュース</h1>
-</header>
+
 
 <div class="container">
 
-    <a class="card" href="posts/news/2026-06-05-130625.html">
+    <a class="card" href="posts/news/2026-06-06-001300.html">
         <div class="tag" style="background:#dc2626">ニュース</div>
-        <div class="title">高市氏、中傷動画否定も「醜い言い訳」で支持率回復遠のく</div>
-        <div class="meta">06-05 13:06</div>
+        <div class="title">奈良飛鳥藤原 いよいよ世界遺産登録へ勧告</div>
+        <div class="meta">06-06 00:13</div>
     </a>
     
     <a class="card" href="posts/news/2026-06-05-125001.html">
         <div class="tag" style="background:#dc2626">ニュース</div>
         <div class="title">杉尾氏激怒！NHKニュース7は高市弁明ばかり</div>
-        <div class="meta">06-05 13:05</div>
+        <div class="meta">06-06 00:12</div>
+    </a>
+    
+    <a class="card" href="posts/news/2026-06-05-130625.html">
+        <div class="tag" style="background:#dc2626">ニュース</div>
+        <div class="title">高市氏、中傷動画否定も「醜い言い訳」で支持率回復遠のく</div>
+        <div class="meta">06-06 00:12</div>
     </a>
     
     <a class="card" href="posts/news/2026-06-05-122328.html">
         <div class="tag" style="background:#dc2626">ニュース</div>
         <div class="title">「殺したい」集団暴行死の姉が法廷で極刑要求</div>
-        <div class="meta">06-05 13:05</div>
+        <div class="meta">06-06 00:12</div>
     </a>
     
 </div>
