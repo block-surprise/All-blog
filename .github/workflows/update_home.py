@@ -44,12 +44,12 @@ for root, dirs, files in os.walk(POST_DIR):
         except:
             body = ""
 
-        if "/ai/" in path:
+        if "/posts/ai/" in path:
             cat = "AI"
             slug = "ai"
             color = "#4f46e5"
 
-        elif "/gadgets/" in path:
+        elif "/posts/gadgets/" in path:
             cat = "ガジェット"
             slug = "gadgets"
             color = "#059669"
