@@ -69,7 +69,7 @@ jobs:
       # sitemap生成
       # =====================
       - name: Build sitemap
-        run: python sitemap.py
+        run: python .github/workflows/sitemap.py
 
       # =====================
       # commit & push
