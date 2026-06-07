@@ -117,190 +117,106 @@ body {{
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
     background: #f5f7fb;
     color: #111;
-    line-height: 1.6;
+    line-height: 1.7;
 }}
 
 /* =====================
-   ナビ
-===================== */
-.nav {{
-    background: #111;
-    padding: 12px 18px;
-    display: flex;
-    gap: 14px;
-    position: sticky;
-    top: 0;
-    z-index: 1000;
-    overflow-x: auto;
-    -webkit-overflow-scrolling: touch;
-}}
-
-.nav a {{
-    color: white;
-    text-decoration: none;
-    font-size: 14px;
-    font-weight: 600;
-    opacity: 0.85;
-    padding: 6px 10px;
-    border-radius: 8px;
-    white-space: nowrap;
-}}
-
-.nav a:hover {{
-    opacity: 1;
-    background: rgba(255,255,255,0.12);
-}}
-
-/* =====================
-   ヘッダー
-===================== */
-header {{
-    background: white;
-    padding: 18px;
-    border-bottom: 1px solid #eee;
-}}
-
-header h1 {{
-    margin: 0;
-    font-size: 18px;
-    font-weight: 700;
-}}
-
-/* =====================
-   キーワード
-===================== */
-.keywords-section {{
-    background: white;
-    padding: 14px;
-    border-bottom: 1px solid #eee;
-}}
-
-.keywords-title {{
-    font-size: 13px;
-    margin: 0 0 10px 0;
-    color: #666;
-}}
-
-.keywords-grid {{
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 8px;
-}}
-
-.keywords-grid a {{
-    display: block;
-    text-align: center;
-    padding: 10px 8px;
-    border-radius: 10px;
-    background: #f1f5f9;
-    text-decoration: none;
-    color: #111;
-    font-size: 12px;
-    transition: 0.15s;
-}}
-
-.keywords-grid a:hover {{
-    background: #e2e8f0;
-}}
-
-/* =====================
-   コンテナ
+   コンテナ（ここ重要）
 ===================== */
 .container {{
-    max-width: 780px;
+    max-width: 900px;
     margin: auto;
-    padding: 10px 12px;
+    padding: 16px;
     width: 100%;
     box-sizing: border-box;
 }}
 
 /* =====================
-   カード
+   カード（余白改善）
 ===================== */
 .card {{
     display: block;
     background: white;
-    padding: 14px;
-    border-bottom: 1px solid #eee;
+    padding: 16px;
+    margin-bottom: 10px;
+    border-radius: 12px;
     text-decoration: none;
     color: inherit;
     transition: 0.15s;
+    border: 1px solid #eee;
 }}
 
 .card:hover {{
     background: #f9fafb;
+    transform: translateY(-1px);
 }}
 
+/* =====================
+   タグ
+===================== */
 .tag {{
     display: inline-block;
     font-size: 11px;
-    padding: 3px 8px;
+    padding: 4px 10px;
     border-radius: 999px;
     color: white;
-    margin-bottom: 6px;
+    margin-bottom: 8px;
 }}
 
+/* =====================
+   タイトル
+===================== */
 .title {{
-    font-size: 15px;
-    font-weight: 600;
+    font-size: 16px;
+    font-weight: 700;
 }}
 
+/* =====================
+   メタ
+===================== */
 .meta {{
     font-size: 12px;
     color: #888;
+    margin-top: 4px;
 }}
 
 /* =====================
-   カテゴリ
+   ナビ（OKだけど強化）
 ===================== */
+.nav {{
+    background: #111;
+    padding: 12px 16px;
+    display: flex;
+    gap: 12px;
+    position: sticky;
+    top: 0;
+    overflow-x: auto;
+}}
+
+.nav a {{
+    white-space: nowrap;
+}}
+
+/* =====================
+   グリッド（ここが本丸）
+===================== */
+.keywords-grid {{
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+}}
+
 .categories {{
     display: grid;
     grid-template-columns: repeat(3, 1fr);
-    gap: 8px;
+    gap: 10px;
     padding: 10px;
 }}
 
-.categories a {{
-    background: white;
-    padding: 12px;
-    text-align: center;
-    border-radius: 10px;
-    text-decoration: none;
-    font-size: 13px;
-    border: 1px solid #eee;
-}}
-
 /* =====================
-   フッター
+   スマホ対応
 ===================== */
-.footer {{
-    text-align: center;
-    padding: 20px;
-    font-size: 13px;
-    color: #666;
-}}
-
-.footer a {{
-    color: #666;
-    text-decoration: none;
-}}
-
-.footer a:hover {{
-    text-decoration: underline;
-}}
-
-/* =====================
-   レスポンシブ
-===================== */
-@media (max-width: 600px) {{
-
-    header h1 {{
-        font-size: 16px;
-    }}
-
-    .card {{
-        padding: 12px;
-    }}
+@media (max-width: 768px) {{
 
     .keywords-grid {{
         grid-template-columns: repeat(2, 1fr);
@@ -308,6 +224,14 @@ header h1 {{
 
     .categories {{
         grid-template-columns: 1fr;
+    }}
+
+    .container {{
+        padding: 12px;
+    }}
+
+    .title {{
+        font-size: 15px;
     }}
 }}
 
