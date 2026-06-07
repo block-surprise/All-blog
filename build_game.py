@@ -108,6 +108,9 @@ html = f"""
 <head>
 <meta charset="UTF-8">
 <title>ひとりゲームニュース</title>
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3571574988222927"crossorigin="anonymous"></script>
+<link rel="icon" type="image/png" href="/favicon.png">
+<link rel="apple-touch-icon" href="/favicon.png">
 <style>
 body {{
     margin: 0;
