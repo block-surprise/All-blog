@@ -2,7 +2,7 @@ import os
 import re
 from datetime import datetime
 
-POST_DIR = "game_posts"
+POST_DIR = "game/posts"
 articles = []
 
 # =====================
