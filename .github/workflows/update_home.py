@@ -263,6 +263,21 @@ header h1 {{
         padding: 12px;
     }}
 }}
+.footer {{
+    text-align: center;
+    padding: 20px;
+    font-size: 13px;
+    color: #666;
+}}
+
+.footer a {{
+    color: #666;
+    text-decoration: none;
+}}
+
+.footer a:hover {{
+    text-decoration: underline;
+}}
 </style>
 </head>
 
@@ -300,6 +315,11 @@ header h1 {{
   <a href="/posts/gadgets/">ガジェット</a>
   <a href="/posts/news/">国内ニュース</a>
 </div>
+<footer class="footer">
+
+  <a href="/privacy.html">プライバシーポリシー</a>
+
+</footer>
 </body>
 </html>
 """
