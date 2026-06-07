@@ -44,7 +44,7 @@ for root, dirs, files in os.walk(POST_DIR):
             body = ""
 
         # =====================
-        # カテゴリ判定（統一済み）
+        # カテゴリ判定
         # =====================
         if "/mobile/" in path:
             cat = "mobile"
@@ -61,10 +61,7 @@ for root, dirs, files in os.walk(POST_DIR):
         filename = os.path.basename(path)
 
         try:
-            dt = datetime.strptime(
-                filename.replace(".html", ""),
-                "%Y-%m-%d-%H%M%S"
-            )
+            dt = datetime.strptime(filename.replace(".html", ""), "%Y-%m-%d-%H%M%S")
             ts = dt.timestamp()
             time_str = dt.strftime("%m-%d %H:%M")
         except:
@@ -94,7 +91,7 @@ articles = sorted(articles, key=lambda x: x["ts"], reverse=True)
 cards = ""
 for a in articles:
     cards += f"""
-    <a class="card" href="/{a['path']}">
+    <a class="card" href="{a['path']}">
         <div class="tag" style="background:{a['color']}">{a['cat']}</div>
         <div class="title">{a['title']}</div>
         <div class="meta">{a['time']}</div>
@@ -103,98 +100,24 @@ for a in articles:
 
 
 # =====================
-# HTML（ホーム）
+# ホームHTML
 # =====================
 html = f"""
 <!DOCTYPE html>
 <html lang="ja">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>ひとりゲームニュース</title>
-<link rel="icon" type="image/png" href="/favicon.png">
-<link rel="apple-touch-icon" href="/favicon.png">
 <style>
-body {{
-    margin: 0;
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-    background: #f5f7fb;
-    color: #111;
-}}
-
-header {{
-    background: white;
-    padding: 16px;
-    border-bottom: 1px solid #eee;
-    font-weight: bold;
-}}
-
-.nav {{
-    background: #111;
-    padding: 12px 18px;
-    display: flex;
-    gap: 14px;
-    position: sticky;
-    top: 0;
-    overflow-x: auto;
-}}
-
-.nav a {{
-    color: white;
-    text-decoration: none;
-    font-size: 14px;
-    font-weight: 600;
-    opacity: 0.85;
-    padding: 6px 10px;
-    border-radius: 8px;
-}}
-
-.container {{
-    max-width: 780px;
-    margin: auto;
-    padding: 14px;
-}}
-
-.card {{
-    display: block;
-    background: white;
-    padding: 14px;
-    border-bottom: 1px solid #eee;
-    text-decoration: none;
-    color: inherit;
-}}
-
-.tag {{
-    display: inline-block;
-    font-size: 11px;
-    padding: 3px 8px;
-    border-radius: 999px;
-    color: white;
-    margin-bottom: 6px;
-}}
-
-.title {{
-    font-size: 15px;
-    font-weight: 600;
-}}
-
-.meta {{
-    font-size: 12px;
-    color: #888;
-}}
+body {{ font-family:sans-serif; background:#f5f7fb; }}
+.container {{ max-width:780px; margin:auto; padding:14px; }}
+.card {{ display:block; background:white; padding:14px; margin-bottom:8px; text-decoration:none; }}
+.tag {{ font-size:11px; padding:3px 8px; border-radius:999px; color:white; }}
 </style>
 </head>
-
 <body>
 
-<header>ひとりゲームニュース</header>
-
-<nav class="nav">
-  <a href="/game/index.html">ホーム</a>
-  <a href="/game/mobile/">スマホ</a>
-  <a href="/game/console/">家庭用</a>
-  <a href="/game/news/">ニュース</a>
-</nav>
+<h1>ひとりゲームニュース</h1>
 
 <div class="container">
 {cards}
@@ -204,23 +127,24 @@ header {{
 </html>
 """
 
-
-# =====================
-# 保存
-# =====================
 os.makedirs("game", exist_ok=True)
 
 with open("game/index.html", "w", encoding="utf-8") as f:
     f.write(html)
 
 print("updated")
+
+
+# =====================
+# カテゴリページ
+# =====================
 def build_category_page(category_name, articles, color, slug):
 
     cards = ""
 
     for a in articles:
         cards += f"""
-        <a class="card" href="/{a['path']}">
+        <a class="card" href="{a['path']}">
             <div class="tag" style="background:{a['color']}">{a['cat']}</div>
             <div class="title">{a['title']}</div>
             <div class="meta">{a['time']}</div>
@@ -234,11 +158,9 @@ def build_category_page(category_name, articles, color, slug):
 <meta charset="UTF-8">
 <title>{category_name}</title>
 <style>
-body {{ font-family: sans-serif; background:#f5f7fb; }}
+body {{ font-family:sans-serif; background:#f5f7fb; }}
 .container {{ max-width:780px; margin:auto; padding:14px; }}
 .card {{ display:block; background:white; padding:14px; margin-bottom:8px; text-decoration:none; }}
-.tag {{ font-size:11px; padding:3px 8px; border-radius:999px; color:white; }}
-.title {{ font-weight:600; }}
 </style>
 </head>
 <body>
@@ -257,7 +179,12 @@ body {{ font-family: sans-serif; background:#f5f7fb; }}
 
     with open(f"game/{slug}/index.html", "w", encoding="utf-8") as f:
         f.write(html)
-   mobile_articles = [a for a in articles if a["cat"] == "mobile"]
+
+
+# =====================
+# フィルタ
+# =====================
+mobile_articles = [a for a in articles if a["cat"] == "mobile"]
 console_articles = [a for a in articles if a["cat"] == "console"]
 news_articles = [a for a in articles if a["cat"] == "news"]
 
