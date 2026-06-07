@@ -9,6 +9,9 @@ on:
   push:
     paths:
       - "game_posts/**"
+      - "game/**"
+      - "generate_game.py"
+      - "build_game.py"
       - ".github/workflows/game-blog.yml"
   workflow_dispatch:
 
@@ -17,17 +20,47 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v4
+      # =====================
+      # リポジトリ取得
+      # =====================
+      - name: Checkout
+        uses: actions/checkout@v4
 
-      - uses: actions/setup-python@v5
+      # =====================
+      # Pythonセットアップ
+      # =====================
+      - name: Set up Python
+        uses: actions/setup-python@v5
         with:
           python-version: "3.10"
 
-      - run: python build_game.py
+      # =====================
+      # 依存関係（必要なら追加）
+      # =====================
+      - name: Install dependencies
+        run: |
+          pip install --upgrade pip
+          pip install google-generativeai feedparser requests
 
-      - run: |
+      # =====================
+      # 記事生成
+      # =====================
+      - name: Generate game article
+        run: python generate_game.py
+
+      # =====================
+      # ホームページ生成
+      # =====================
+      - name: Build homepage
+        run: python build_game.py
+
+      # =====================
+      # commit & push
+      # =====================
+      - name: Commit and push
+        run: |
           git config user.name "ai-bot"
           git config user.email "bot@example.com"
           git add -A
-          git commit -m "auto update" || echo "no changes"
+          git commit -m "auto update game blog" || echo "no changes"
           git push
