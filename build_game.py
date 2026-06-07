@@ -117,8 +117,12 @@ body {{
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
     background: #f5f7fb;
     color: #111;
+    line-height: 1.6;
 }}
 
+/* =====================
+   ナビ
+===================== */
 .nav {{
     background: #111;
     padding: 12px 18px;
@@ -126,7 +130,9 @@ body {{
     gap: 14px;
     position: sticky;
     top: 0;
+    z-index: 1000;
     overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
 }}
 
 .nav a {{
@@ -145,6 +151,9 @@ body {{
     background: rgba(255,255,255,0.12);
 }}
 
+/* =====================
+   ヘッダー
+===================== */
 header {{
     background: white;
     padding: 18px;
@@ -156,6 +165,10 @@ header h1 {{
     font-size: 18px;
     font-weight: 700;
 }}
+
+/* =====================
+   キーワード
+===================== */
 .keywords-section {{
     background: white;
     padding: 14px;
@@ -189,12 +202,21 @@ header h1 {{
 .keywords-grid a:hover {{
     background: #e2e8f0;
 }}
+
+/* =====================
+   コンテナ
+===================== */
 .container {{
     max-width: 780px;
     margin: auto;
     padding: 10px 12px;
+    width: 100%;
+    box-sizing: border-box;
 }}
 
+/* =====================
+   カード
+===================== */
 .card {{
     display: block;
     background: white;
@@ -202,27 +224,13 @@ header h1 {{
     border-bottom: 1px solid #eee;
     text-decoration: none;
     color: inherit;
+    transition: 0.15s;
 }}
 
 .card:hover {{
     background: #f9fafb;
 }}
-.categories {{
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 8px;
-    padding: 10px;
-}}
 
-.categories a {{
-    background: white;
-    padding: 12px;
-    text-align: center;
-    border-radius: 10px;
-    text-decoration: none;
-    font-size: 13px;
-    border: 1px solid #eee;
-}}
 .tag {{
     display: inline-block;
     font-size: 11px;
@@ -242,15 +250,29 @@ header h1 {{
     color: #888;
 }}
 
-@media (max-width: 600px) {{
-    header h1 {{
-        font-size: 16px;
-    }}
-
-    .card {{
-        padding: 12px;
-    }}
+/* =====================
+   カテゴリ
+===================== */
+.categories {{
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 8px;
+    padding: 10px;
 }}
+
+.categories a {{
+    background: white;
+    padding: 12px;
+    text-align: center;
+    border-radius: 10px;
+    text-decoration: none;
+    font-size: 13px;
+    border: 1px solid #eee;
+}}
+
+/* =====================
+   フッター
+===================== */
 .footer {{
     text-align: center;
     padding: 20px;
@@ -265,6 +287,34 @@ header h1 {{
 
 .footer a:hover {{
     text-decoration: underline;
+}}
+
+/* =====================
+   レスポンシブ
+===================== */
+@media (max-width: 600px) {{
+
+    header h1 {{
+        font-size: 16px;
+    }}
+
+    .card {{
+        padding: 12px;
+    }}
+
+    .keywords-grid {{
+        grid-template-columns: repeat(2, 1fr);
+    }}
+
+    .categories {{
+        grid-template-columns: 1fr;
+    }}
+}}
+
+@media (max-width: 400px) {{
+    .keywords-grid {{
+        grid-template-columns: 1fr;
+    }}
 }}
 </style>
 </head>
