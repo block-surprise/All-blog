@@ -1,5 +1,6 @@
 name: game-blog-update
 
+
 on:
   push:
     paths:
