@@ -63,7 +63,7 @@ jobs:
       # ゲーム検索ページ生成
       # =====================
       - name: Build search pages
-        run: python game_search_builder.py
+        run: python .github/workflows/game_search_builder.py
 
       # =====================
       # sitemap生成
