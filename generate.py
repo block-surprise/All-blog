@@ -97,10 +97,8 @@ def get_category(text):
         return "news"
 
 
-# タイトル + 本文で判定
-content = f"{clean_topic} {article_body}"
 
-category = get_category(content)
+
 
 
 # =====================
@@ -236,7 +234,9 @@ if body:
 
     body = body.replace("```html", "").replace("```", "")
 
+content = f"{clean_topic} {body}"
 
+category = get_category(content)
 # =====================
 # HTML生成
 # =====================
