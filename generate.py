@@ -69,14 +69,38 @@ clean_topic = topic.split(" - ")[0].split("｜")[0].strip()
 def get_category(text):
     text = text.lower()
 
-    if any(w in text for w in ["ai", "chatgpt", "gemini", "人工知能"]):
+    if any(w in text for w in [
+        "ai",
+        "chatgpt",
+        "openai",
+        "gpt",
+        "gemini",
+        "claude",
+        "人工知能",
+        "llm"
+    ]):
         return "ai"
-    elif any(w in text for w in ["iphone", "android", "pc", "スマホ", "ガジェット"]):
+
+    elif any(w in text for w in [
+        "iphone",
+        "android",
+        "ipad",
+        "macbook",
+        "pixel",
+        "galaxy",
+        "スマホ",
+        "ガジェット"
+    ]):
         return "gadgets"
+
     else:
         return "news"
 
-category = get_category(clean_topic)
+
+# タイトル + 本文で判定
+content = f"{clean_topic} {article_body}"
+
+category = get_category(content)
 
 
 # =====================
