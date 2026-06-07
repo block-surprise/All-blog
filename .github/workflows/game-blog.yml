@@ -27,8 +27,11 @@ jobs:
 
       - name: Commit and push
         run: |
-          git config user.name "ai-bot"
-          git config user.email "bot@example.com"
-          git add posts index.html .github/workflows/*.yml
-          git commit -m "auto update" || echo "no changes"
-          git push
+         git config user.name "ai-bot"
+         git config user.email "bot@example.com"
+
+         git add -A
+
+         git commit -m "auto update" || echo "no changes"
+
+         git push
