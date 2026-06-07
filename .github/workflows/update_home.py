@@ -38,33 +38,18 @@ for root, dirs, files in os.walk(POST_DIR):
         path = os.path.join(root, file).replace("\\", "/")
         title = extract_title(path)
 
-        with open(path, "r", encoding="utf-8") as f:
-            body = f.read().lower()
+        try:
+            with open(path, "r", encoding="utf-8") as f:
+                body = f.read()
+        except:
+            body = ""
 
-        content = (title + " " + body).lower()
-
-        if any(word in content for word in [
-            "chatgpt",
-            "openai",
-            "gpt",
-            "gemini",
-            "claude",
-            "ai",
-            "人工知能",
-            "llm"
-        ]):
+        if "/ai/" in path:
             cat = "AI"
             slug = "ai"
             color = "#4f46e5"
 
-        elif any(word in content for word in [
-            "iphone",
-            "android",
-            "ipad",
-            "macbook",
-            "pixel",
-            "galaxy"
-        ]):
+        elif "/gadgets/" in path:
             cat = "ガジェット"
             slug = "gadgets"
             color = "#059669"
