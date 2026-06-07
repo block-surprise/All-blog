@@ -1,5 +1,8 @@
 name: game-blog-update
 
+permissions:
+  contents: write
+
 on:
   schedule:
     - cron: "0 */3 * * *"
@@ -14,24 +17,17 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
-      - name: Set up Python
-        uses: actions/setup-python@v5
+      - uses: actions/setup-python@v5
         with:
           python-version: "3.10"
 
-      - name: Run build script
-        run: python build_game.py
+      - run: python build_game.py
 
-      - name: Commit and push
-        run: |
-         git config user.name "ai-bot"
-         git config user.email "bot@example.com"
-
-         git add -A
-
-         git commit -m "auto update" || echo "no changes"
-
-         git push
+      - run: |
+          git config user.name "ai-bot"
+          git config user.email "bot@example.com"
+          git add -A
+          git commit -m "auto update" || echo "no changes"
+          git push
