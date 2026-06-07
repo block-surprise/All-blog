@@ -136,7 +136,7 @@ for root, dirs, files in os.walk(POST_DIR):
 
             "ts": ts
 
-        }
+        })
 # =====================
 # ソート
 # =====================
