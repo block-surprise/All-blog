@@ -121,6 +121,8 @@ html = f"""
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>ひとりテックニュース</title>
 
+<link rel="icon" type="image/png" href="/favicon.png">
+<link rel="apple-touch-icon" href="/favicon.png">
 <style>
 body {{
     margin: 0;
