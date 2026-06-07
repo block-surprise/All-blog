@@ -16,7 +16,6 @@ def extract_title(html_path):
         match = re.search(r"<h1>(.*?)</h1>", html)
         if match:
             return match.group(1)
-
     except:
         pass
 
@@ -32,11 +31,11 @@ for root, dirs, files in os.walk(POST_DIR):
         if not file.endswith(".html"):
             continue
 
-        path = os.path.join(root, file).replace("\\", "/")
-        title = extract_title(path)
-
         if file == "index.html":
             continue
+
+        path = os.path.join(root, file).replace("\\", "/")
+        title = extract_title(path)
 
         try:
             with open(path, "r", encoding="utf-8") as f:
@@ -44,19 +43,19 @@ for root, dirs, files in os.walk(POST_DIR):
         except:
             body = ""
 
+        # =====================
+        # カテゴリ判定（統一済み）
+        # =====================
         if "/mobile/" in path:
-            cat = "スマホゲーム"
-            slug = "mobile"
+            cat = "mobile"
             color = "#4f46e5"
 
         elif "/console/" in path:
-            cat = "家庭用ゲーム"
-            slug = "console"
+            cat = "console"
             color = "#059669"
 
         else:
-            cat = "ゲームニュース"
-            slug = "news"
+            cat = "news"
             color = "#dc2626"
 
         filename = os.path.basename(path)
@@ -68,7 +67,6 @@ for root, dirs, files in os.walk(POST_DIR):
             )
             ts = dt.timestamp()
             time_str = dt.strftime("%m-%d %H:%M")
-
         except:
             ts = os.path.getmtime(path)
             time_str = datetime.fromtimestamp(ts).strftime("%m-%d %H:%M")
@@ -77,23 +75,18 @@ for root, dirs, files in os.walk(POST_DIR):
             "title": title,
             "path": path,
             "cat": cat,
-            "slug": slug,
             "color": color,
             "time": time_str,
-            "ts": ts
+            "ts": ts,
+            "body": body
         })
+
+
 # =====================
 # ソート
 # =====================
 articles = sorted(articles, key=lambda x: x["ts"], reverse=True)
 
-from search_builder import build_search_page
-
-keywords = ["ChatGPT", "iPhone", "OpenAI", "AI", "ニュース","電車","ゲーム","政治","事件","スポーツ"]
-
-for q in keywords:
-
-    build_search_page(q, articles)
 
 # =====================
 # カード生成
@@ -101,7 +94,7 @@ for q in keywords:
 cards = ""
 for a in articles:
     cards += f"""
-    <a class="card" href="{a['path']}">
+    <a class="card" href="/{a['path']}">
         <div class="tag" style="background:{a['color']}">{a['cat']}</div>
         <div class="title">{a['title']}</div>
         <div class="meta">{a['time']}</div>
@@ -110,7 +103,7 @@ for a in articles:
 
 
 # =====================
-# HTML
+# HTML（ホーム）
 # =====================
 html = f"""
 <!DOCTYPE html>
@@ -126,6 +119,13 @@ body {{
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
     background: #f5f7fb;
     color: #111;
+}}
+
+header {{
+    background: white;
+    padding: 16px;
+    border-bottom: 1px solid #eee;
+    font-weight: bold;
 }}
 
 .nav {{
@@ -146,62 +146,12 @@ body {{
     opacity: 0.85;
     padding: 6px 10px;
     border-radius: 8px;
-    white-space: nowrap;
 }}
 
-.nav a:hover {{
-    opacity: 1;
-    background: rgba(255,255,255,0.12);
-}}
-
-header {{
-    background: white;
-    padding: 18px;
-    border-bottom: 1px solid #eee;
-}}
-
-header h1 {{
-    margin: 0;
-    font-size: 18px;
-    font-weight: 700;
-}}
-.keywords-section {{
-    background: white;
-    padding: 14px;
-    border-bottom: 1px solid #eee;
-}}
-
-.keywords-title {{
-    font-size: 13px;
-    margin: 0 0 10px 0;
-    color: #666;
-}}
-
-.keywords-grid {{
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 8px;
-}}
-
-.keywords-grid a {{
-    display: block;
-    text-align: center;
-    padding: 10px 8px;
-    border-radius: 10px;
-    background: #f1f5f9;
-    text-decoration: none;
-    color: #111;
-    font-size: 12px;
-    transition: 0.15s;
-}}
-
-.keywords-grid a:hover {{
-    background: #e2e8f0;
-}}
 .container {{
     max-width: 780px;
     margin: auto;
-    padding: 10px 12px;
+    padding: 14px;
 }}
 
 .card {{
@@ -213,25 +163,6 @@ header h1 {{
     color: inherit;
 }}
 
-.card:hover {{
-    background: #f9fafb;
-}}
-.categories {{
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 8px;
-    padding: 10px;
-}}
-
-.categories a {{
-    background: white;
-    padding: 12px;
-    text-align: center;
-    border-radius: 10px;
-    text-decoration: none;
-    font-size: 13px;
-    border: 1px solid #eee;
-}}
 .tag {{
     display: inline-block;
     font-size: 11px;
@@ -250,70 +181,45 @@ header h1 {{
     font-size: 12px;
     color: #888;
 }}
-
-@media (max-width: 600px) {{
-    header h1 {{
-        font-size: 16px;
-    }}
-
-    .card {{
-        padding: 12px;
-    }}
-}}
 </style>
 </head>
 
 <body>
 
-<header>
-<h1>ひとりゲームニュース</h1>
-</header>
+<header>ひとりゲームニュース</header>
+
 <nav class="nav">
   <a href="/game/index.html">ホーム</a>
-<a href="/game/mobile/">スマホ</a>
-<a href="/game/console/">家庭用</a>
-<a href="/game/news/">ゲームニュース</a>
+  <a href="/game/mobile/">スマホ</a>
+  <a href="/game/console/">家庭用</a>
+  <a href="/game/news/">ニュース</a>
 </nav>
-<div class="keywords-section">
-  <h2 class="keywords-title">おすすめキーワード</h2>
-
-  <div class="keywords-grid">
-    <a href="/search/iPhone">iPhone</a>
-    <a href="/search/OpenAI">OpenAI</a>
-    <a href="/search/スポーツ">スポーツ</a>
-    <a href="/search/電車">電車</a>
-    <a href="/search/ゲーム">ゲーム</a>
-    <a href="/search/AI">AI</a>
-  </div>
-</div>
 
 <div class="container">
-
 {cards}
 </div>
-<div class="categories">
-  <a href="/game/ai/">モバイルゲーム</a>
-  <a href="/game/gadgets/">家庭用ゲーム</a>
-  <a href="/game/news/">ゲームニュース</a>
-</div>
+
 </body>
 </html>
 """
 
+
+# =====================
+# 保存
+# =====================
 os.makedirs("game", exist_ok=True)
 
 with open("game/index.html", "w", encoding="utf-8") as f:
     f.write(html)
-    # =====================
-# カテゴリページ生成
-# =====================
 
+print("updated")
 def build_category_page(category_name, articles, color, slug):
+
     cards = ""
 
     for a in articles:
         cards += f"""
-        <a class="card" href="{a['path']}">
+        <a class="card" href="/{a['path']}">
             <div class="tag" style="background:{a['color']}">{a['cat']}</div>
             <div class="title">{a['title']}</div>
             <div class="meta">{a['time']}</div>
@@ -325,93 +231,19 @@ def build_category_page(category_name, articles, color, slug):
 <html lang="ja">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>{category_name}</title>
-
 <style>
-body {{
-    margin: 0;
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-    background: #f5f7fb;
-}}
-
-.container {{
-    max-width: 780px;
-    margin: auto;
-    padding: 10px 12px;
-}}
-
-.card {{
-    display: block;
-    background: white;
-    padding: 14px;
-    border-bottom: 1px solid #eee;
-    text-decoration: none;
-    color: inherit;
-}}
-.nav {{
-    background: #111;
-    padding: 12px 18px;
-    display: flex;
-    gap: 14px;
-    position: sticky;
-    top: 0;
-    overflow-x: auto;
-}}
-
-.nav a {{
-    color: white;
-    text-decoration: none;
-    font-size: 14px;
-    font-weight: 600;
-    opacity: 0.85;
-    padding: 6px 10px;
-    border-radius: 8px;
-    white-space: nowrap;
-}}
-
-.nav a:hover {{
-    opacity: 1;
-    background: rgba(255,255,255,0.12);
-}}
-
-.tag {{
-    display: inline-block;
-    font-size: 11px;
-    padding: 3px 8px;
-    border-radius: 999px;
-    color: white;
-}}
-
-.title {{
-    font-size: 15px;
-    font-weight: 600;
-}}
-
-.meta {{
-    font-size: 12px;
-    color: #888;
-}}
-
-header {{
-    background: white;
-    padding: 16px;
-    border-bottom: 1px solid #eee;
-}}
+body {{ font-family: sans-serif; background:#f5f7fb; }}
+.container {{ max-width:780px; margin:auto; padding:14px; }}
+.card {{ display:block; background:white; padding:14px; margin-bottom:8px; text-decoration:none; }}
+.tag {{ font-size:11px; padding:3px 8px; border-radius:999px; color:white; }}
+.title {{ font-weight:600; }}
 </style>
 </head>
-
 <body>
 
-<header>
 <h1>{category_name}</h1>
-</header>
-<nav class="nav">
-  <a href="/game/index.html">ホーム</a>
-<a href="/game/mobile/">スマホ</a>
-<a href="/game/console/">家庭用</a>
-<a href="/game/news/">ゲームニュース</a>
-</nav>
+
 <div class="container">
 {cards}
 </div>
@@ -420,18 +252,14 @@ header {{
 </html>
 """
 
+    os.makedirs(f"game/{slug}", exist_ok=True)
 
+    with open(f"game/{slug}/index.html", "w", encoding="utf-8") as f:
+        f.write(html)
+   mobile_articles = [a for a in articles if a["cat"] == "mobile"]
+console_articles = [a for a in articles if a["cat"] == "console"]
+news_articles = [a for a in articles if a["cat"] == "news"]
 
-
-# =====================
-# フィルタして生成
-# =====================
-
-ai_articles = [a for a in articles if a["cat"] == "AI"]
-gadgets_articles = [a for a in articles if a["cat"] == "ガジェット"]
-news_articles = [a for a in articles if a["cat"] == "ニュース"]
-
-build_category_page("モバイルゲーム", ai_articles, "#4f46e5", "ai")
-build_category_page("家庭用ゲーム", gadgets_articles, "#059669", "gadgets")
+build_category_page("スマホゲーム", mobile_articles, "#4f46e5", "mobile")
+build_category_page("家庭用ゲーム", console_articles, "#059669", "console")
 build_category_page("ゲームニュース", news_articles, "#dc2626", "news")
-print("updated")
