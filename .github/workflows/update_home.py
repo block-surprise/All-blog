@@ -27,62 +27,116 @@ def extract_title(html_path):
 # 記事収集
 # =====================
 for root, dirs, files in os.walk(POST_DIR):
+
     for file in files:
 
         if not file.endswith(".html"):
+
             continue
 
         if file == "index.html":
+
             continue
 
         path = os.path.join(root, file).replace("\\", "/")
+
         title = extract_title(path)
 
         try:
+
             with open(path, "r", encoding="utf-8") as f:
+
                 body = f.read()
+
         except:
+
             body = ""
 
-        if "/posts/ai/" in path:
+        # =====================
+
+        # ★ここが完全修正版
+
+        # =====================
+
+        folder = os.path.basename(os.path.dirname(path))
+
+        if folder == "ai":
+
             cat = "AI"
+
             slug = "ai"
+
             color = "#4f46e5"
 
-        elif "/posts/gadgets/" in path:
+        elif folder == "gadgets":
+
             cat = "ガジェット"
+
             slug = "gadgets"
+
             color = "#059669"
 
         else:
+
             cat = "ニュース"
+
             slug = "news"
+
             color = "#dc2626"
+
+        # =====================
+
+        # 時間処理
+
+        # =====================
 
         filename = os.path.basename(path)
 
         try:
+
             dt = datetime.strptime(
+
                 filename.replace(".html", ""),
+
                 "%Y-%m-%d-%H%M%S"
+
             )
+
             ts = dt.timestamp()
+
             time_str = dt.strftime("%m-%d %H:%M")
 
         except:
+
             ts = os.path.getmtime(path)
+
             time_str = datetime.fromtimestamp(ts).strftime("%m-%d %H:%M")
 
+        # =====================
+
+        # 保存
+
+        # =====================
+
         articles.append({
+
             "title": title,
+
             "body": body,
+
             "path": path,
+
             "cat": cat,
+
             "slug": slug,
+
             "color": color,
+
             "time": time_str,
+
             "ts": ts
-        })
+
+        }
 # =====================
 # ソート
 # =====================
