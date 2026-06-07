@@ -28,29 +28,36 @@ def extract_title(html_path):
 # =====================
 for root, dirs, files in os.walk(POST_DIR):
     for file in files:
+
         if not file.endswith(".html"):
             continue
 
-path = os.path.join(root, file).replace("\\", "/")
-title = extract_title(path)
+        path = os.path.join(root, file).replace("\\", "/")
+        title = extract_title(path)
 
-if file == "index.html":
-    continue
+        if file == "index.html":
+            continue
 
-if "/mobile/" in path:
-    cat = "スマホゲーム"
-    slug = "mobile"
-    color = "#4f46e5"
+        try:
+            with open(path, "r", encoding="utf-8") as f:
+                body = f.read()
+        except:
+            body = ""
 
-elif "/console/" in path:
-    cat = "家庭用ゲーム"
-    slug = "console"
-    color = "#059669"
+        if "/mobile/" in path:
+            cat = "スマホゲーム"
+            slug = "mobile"
+            color = "#4f46e5"
 
-else:
-    cat = "ゲームニュース"
-    slug = "news"
-    color = "#dc2626"
+        elif "/console/" in path:
+            cat = "家庭用ゲーム"
+            slug = "console"
+            color = "#059669"
+
+        else:
+            cat = "ゲームニュース"
+            slug = "news"
+            color = "#dc2626"
 
         filename = os.path.basename(path)
 
