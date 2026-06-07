@@ -258,6 +258,14 @@ header h1 {{
 <div class="container">
 {cards}
 </div>
+<div class="categories">
+  <a href="/posts/ai/">AIニュース</a>
+  <a href="/posts/gadgets/">ガジェット</a>
+  <a href="/posts/news/">国内ニュース</a>
+</div>
+<footer class="footer">
+
+  <a href="https://htn-news.f5.si/privacy.html">プライバシーポリシー</a>
 
 </body>
 </html>
