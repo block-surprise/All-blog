@@ -306,7 +306,7 @@ header h1 {{
 <footer class="footer">
 
   <a href="https://htn-news.f5.si/privacy.html">プライバシーポリシー</a>
-
+</footer>
 </body>
 </html>
 """
