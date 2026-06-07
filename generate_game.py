@@ -215,7 +215,7 @@ h2 {{
 
 <body>
 
-<header>ひとりテックマイクラ</header>
+<header>ひとりゲームニュース</header>
 
 <div class="container">
 <div class="article">
