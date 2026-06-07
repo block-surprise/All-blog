@@ -421,8 +421,6 @@ header {{
 """
 
 
-with open(f"game/{slug}/index.html", "w", encoding="utf-8") as f:
-        f.write(html)
 
 
 # =====================
