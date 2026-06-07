@@ -107,7 +107,12 @@ header {{
 <header>
 <h1>検索結果: {query}</h1>
 </header>
-
+<nav class="nav">
+  <a href="/index.html">ホーム</a>
+  <a href="/posts/ai/">AI</a>
+  <a href="/posts/gadgets/">ガジェット</a>
+  <a href="/posts/news/">ニュース</a>
+</nav>
 <div class="container">
 {cards if cards else "<p>結果なし</p>"}
 </div>
