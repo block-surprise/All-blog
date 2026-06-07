@@ -28,21 +28,43 @@ def extract_title(html_path):
 # =====================
 for root, dirs, files in os.walk(POST_DIR):
     for file in files:
+
         if not file.endswith(".html"):
+            continue
+
+        if file == "index.html":
             continue
 
         path = os.path.join(root, file).replace("\\", "/")
         title = extract_title(path)
 
-        if file == "index.html":
-            continue
+        with open(path, "r", encoding="utf-8") as f:
+            body = f.read().lower()
 
-        if "/ai/" in path:
+        content = (title + " " + body).lower()
+
+        if any(word in content for word in [
+            "chatgpt",
+            "openai",
+            "gpt",
+            "gemini",
+            "claude",
+            "ai",
+            "人工知能",
+            "llm"
+        ]):
             cat = "AI"
             slug = "ai"
             color = "#4f46e5"
 
-        elif "/gadgets/" in path:
+        elif any(word in content for word in [
+            "iphone",
+            "android",
+            "ipad",
+            "macbook",
+            "pixel",
+            "galaxy"
+        ]):
             cat = "ガジェット"
             slug = "gadgets"
             color = "#059669"
@@ -68,6 +90,7 @@ for root, dirs, files in os.walk(POST_DIR):
 
         articles.append({
             "title": title,
+            "body": body,
             "path": path,
             "cat": cat,
             "slug": slug,
