@@ -420,7 +420,8 @@ header {{
 </html>
 """
 
-os.makedirs(f"game/{slug}", exist_ok=True)
+for a in articles:
+    os.makedirs(f"game/{a['slug']}", exist_ok=True)
 
 with open(f"game/{slug}/index.html", "w", encoding="utf-8") as f:
         f.write(html)
