@@ -280,9 +280,6 @@ header h1 {{
 <a href="/game/mobile/">スマホ</a>
 <a href="/game/console/">家庭用</a>
 <a href="/game/news/">ゲームニュース</a>
-  <a href="/game/mobile/">スマホ</a>
-  <a href="/game/console/">家庭用</a>
-  <a href="/game/news/">ニュース</a>
 </nav>
 <div class="keywords-section">
   <h2 class="keywords-title">おすすめキーワード</h2>
