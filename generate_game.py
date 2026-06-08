@@ -265,9 +265,19 @@ img {{
     font-size: 12px;
 }}
 
+h1 {{
+    font-size: 20px;
+    line-height: 1.4;
+    margin-top: 12px;
+    margin-bottom: 18px;
+}}
+
 h2 {{
+    font-size: 16px;
     border-left: 4px solid #4f46e5;
     padding-left: 10px;
+    margin-top: 24px;
+    margin-bottom: 10px;
 }}
 </style>
 </head>
