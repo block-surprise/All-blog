@@ -53,4 +53,4 @@ def build_all_search_pages(articles):
 
     # ③ 各キーワードでページ生成
     for q in keywords:
-        build_search(q, articles)
+        search_builder(q, articles)
