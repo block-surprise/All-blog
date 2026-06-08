@@ -200,4 +200,4 @@ def build_all_search_pages(articles):
 
         build_search_page(kw, articles)
 
-    print("search pages created:", len(KEYW
+    print("search pages created:", len(KEYWORDS))
