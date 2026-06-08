@@ -56,8 +56,8 @@ for root, dirs, files in os.walk(POST_DIR):
             color = "#059669"
 
         else:
-            cat = "news"
-            color = "#dc2626"
+            cat = "minecraft"
+            color = "#22c55e"
 
         filename = os.path.basename(path)
 
@@ -298,31 +298,35 @@ header h1 {{
 
 <nav class="nav">
   <a href="/game/index.html">ホーム</a>
-<a href="/game/mobile/">スマホ</a>
-<a href="/game/console/">家庭用</a>
-<a href="/game/news/">ゲームニュース</a>
+<a href="search/初心者">初心者</a>
+<a href="search/建築">建築</a>
+<a href="search/サバイバル">サバイバル</a>
 </nav>
 <div class="keywords-section">
   <h2 class="keywords-title">おすすめキーワード</h2>
 
+<div class="keywords-section">
+  <h2 class="keywords-title">おすすめキーワード</h2>
+
   <div class="keywords-grid">
-    <a href="/search/iPhone">iPhone</a>
-    <a href="/search/OpenAI">OpenAI</a>
-    <a href="/search/スポーツ">スポーツ</a>
-    <a href="/search/電車">電車</a>
-    <a href="/search/ゲーム">ゲーム</a>
-    <a href="/search/AI">AI</a>
+    <a href="search/マイクラ">マイクラ</a>
+    <a href="search/初心者">初心者</a>
+    <a href="search/建築">建築</a>
+    <a href="search/自動装置">自動装置</a>
+    <a href="search/経験値トラップ">経験値TT</a>
+    <a href="search/アイアンゴーレムトラップ">鉄トラップ</a>
   </div>
 </div>
+
 
 
 <div class="container">
 {cards}
 </div>
 <div class="categories">
-  <a href="/posts/ai/">AIニュース</a>
-  <a href="/posts/gadgets/">ガジェット</a>
-  <a href="/posts/news/">国内ニュース</a>
+<a href="search/マイクラ">マイクラ</a>
+<a href="search/建築">建築</a>
+<a href="search/自動装置">自動装置</a>
 </div>
 <footer class="footer">
 
