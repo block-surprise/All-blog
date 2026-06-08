@@ -1,40 +1,43 @@
 name: Add Latest Widget
 
 permissions:
-contents: write
+  contents: write
 
 on:
-workflow_dispatch:
+  workflow_dispatch:
 
 jobs:
-build:
-runs-on: ubuntu-latest
+  build:
+    runs-on: ubuntu-latest
 
-steps:
-  # =====================
-  # リポジトリ取得
-  # =====================
-  - name: Checkout repo
-    uses: actions/checkout@v4
-  # =====================
-  # Pythonセットアップ
-  # =====================
-  - name: Setup Python
-    uses: actions/setup-python@v5
-    with:
-      python-version: "3.10"
-  # =====================
-  # スクリプト実行
-  # =====================
-  - name: Add latest widget
-    run: python .github/workflows/add_latest.py
-  # =====================
-  # commit & push
-  # =====================
-  - name: Commit and push
-    run: |
-      git config user.name "ai-bot"
-      git config user.email "bot@example.com"
-      git add .
-      git commit -m "add latest widget" || echo "no changes"
-      git push
+    steps:
+      # =====================
+      # リポジトリ取得
+      # =====================
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      # =====================
+      # Pythonセットアップ
+      # =====================
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.10"
+
+      # =====================
+      # スクリプト実行
+      # =====================
+      - name: Add latest widget
+        run: python .github/workflows/add_latest.py
+
+      # =====================
+      # commit & push
+      # =====================
+      - name: Commit and push
+        run: |
+          git config user.name "ai-bot"
+          git config user.email "bot@example.com"
+          git add .
+          git commit -m "add latest widget" || echo "no changes"
+          git push
