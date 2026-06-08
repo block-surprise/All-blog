@@ -302,8 +302,7 @@ header h1 {{
 <a href="search/建築">建築</a>
 <a href="search/サバイバル">サバイバル</a>
 </nav>
-<div class="keywords-section">
-  <h2 class="keywords-title">おすすめキーワード</h2>
+
 
 <div class="keywords-section">
   <h2 class="keywords-title">おすすめキーワード</h2>
