@@ -5,7 +5,7 @@ import google.generativeai as genai
 from datetime import datetime
 from zoneinfo import ZoneInfo
 import time
-
+from search_builder import build_all_search_pages
 # =====================
 # APIキー
 # =====================
@@ -72,7 +72,7 @@ clean_topic = clean_topic.replace("\n", "").strip()
 # 固定カテゴリ（マイクラ）
 # =====================
 category = "minecraft"
-
+articles = []
 
 # =====================
 # ランダム画像（任意）
@@ -95,7 +95,15 @@ def get_random_image():
 
 image_url = get_random_image()
 
-
+articles.append({
+    "title": title,
+    "body": body,
+    "path": filename,
+    "ts": datetime.now().timestamp(),
+    "cat": category,
+    "color": "#dc2626",
+    "time": datetime.now().strftime("%m-%d %H:%M")
+})
 # =====================
 # タイトル生成
 # =====================
@@ -371,3 +379,6 @@ with open(filename, "w", encoding="utf-8") as f:
     f.write(build_html(title, body, category, image_url))
 
 print("記事生成完了:", title)
+
+
+build_all_search_pages(articles)
