@@ -8,16 +8,20 @@ update:
 runs-on: ubuntu-latest
 
 steps:
-  - uses: actions/checkout@v4
-  - uses: actions/setup-python@v5
+  - name: Checkout
+    uses: actions/checkout@v4
+  - name: Setup Python
+    uses: actions/setup-python@v5
     with:
-      python-version: "3.11"
-  - name: Run script
+      python-version: '3.11'
+  - name: Run Script
     run: python add_latest.py
-  - name: Commit changes
+  - name: Commit Changes
     run: |
       git config user.name "github-actions"
       git config user.email "actions@github.com"
       git add .
-      git diff --cached --quiet || git commit -m "Add latest widget"
-      git push
+      if ! git diff --cached --quiet; then
+        git commit -m "Add latest widget"
+        git push
+      fi
