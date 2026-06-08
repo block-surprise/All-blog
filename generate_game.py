@@ -279,6 +279,42 @@ h2 {{
     margin-top: 24px;
     margin-bottom: 10px;
 }}
+.latest-box {{
+    margin-top: 30px;
+    padding-top: 20px;
+    border-top: 1px solid #eee;
+}}
+
+.latest-box h2 {{
+    font-size: 20px;
+    margin-bottom: 12px;
+}}
+
+.latest-item {{
+    display: block;
+    padding: 12px;
+    margin-bottom: 10px;
+    background: #f8fafc;
+    border-radius: 10px;
+    text-decoration: none;
+    color: #111;
+    border: 1px solid #e5e7eb;
+}}
+
+.latest-item:hover {{
+    background: #eef2ff;
+}}
+
+.latest-title {{
+    font-size: 14px;
+    font-weight: 600;
+}}
+
+.latest-date {{
+    font-size: 12px;
+    color: #666;
+    margin-top: 4px;
+}}
 </style>
 </head>
 
@@ -299,7 +335,17 @@ h2 {{
 
 </div>
 </div>
+<div class="latest-box">
 
+<h2>最新記事</h2>
+
+<div id="latest-posts">
+読み込み中...
+</div>
+
+</div>
+
+<script src="/game/latest.js"></script>
 </body>
 </html>
 """
