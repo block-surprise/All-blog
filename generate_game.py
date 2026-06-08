@@ -137,11 +137,67 @@ body_prompt = f"""
 {sections}
 
 条件：
-- 各<h2>ごとに内容を書く
-- HTMLのみ
+- h2の本文だけを書く
+
+- HTML断片のみ
+
+- DOCTYPE禁止
+
+- htmlタグ禁止
+
+- headタグ禁止
+
+- bodyタグ禁止
+
+- h1タグ禁止
+
+- 各見出しごとに十分な解説を書く
+
 - 1500〜3500文字
 """
 body = generate_text(body_prompt)
+if body:
+
+    body = body.replace("```html", "")
+    body = body.replace("```", "")
+
+    # html/body/head削除
+    body = re.sub(
+        r'<!DOCTYPE.*?<body[^>]*>',
+        '',
+        body,
+        flags=re.S | re.I
+    )
+
+    body = re.sub(
+        r'</body>.*?</html>',
+        '',
+        body,
+        flags=re.S | re.I
+    )
+
+    body = re.sub(
+        r'<head.*?>.*?</head>',
+        '',
+        body,
+        flags=re.S | re.I
+    )
+
+    body = re.sub(
+        r'<html.*?>',
+        '',
+        body,
+        flags=re.S | re.I
+    )
+
+    body = body.replace("</html>", "")
+body = re.sub(
+    r'<h1.*?>.*?</h1>',
+    '',
+    body,
+    count=1,
+    flags=re.S | re.I
+)
 
 if body:
     body = body.replace("```html", "").replace("```", "")
