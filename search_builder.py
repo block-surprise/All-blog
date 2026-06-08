@@ -132,10 +132,10 @@ header {{
 <h1>検索結果: {query}</h1>
 </header>
 <nav class="nav">
-  <a href="/index.html">ホーム</a>
-  <a href="/posts/ai/">AI</a>
-  <a href="/posts/gadgets/">ガジェット</a>
-  <a href="/posts/news/">ニュース</a>
+  <a href="/game/index.html">ホーム</a>
+  <a href="/game/search/初心者.html">初心者</a>
+  <a href="/game/search/建築.html">建築</a>
+  <a href="/game/search/自動装置.html">自動装置</a>
 </nav>
 <div class="container">
 {cards if cards else "<p>結果なし</p>"}
@@ -144,12 +144,12 @@ header {{
 </body>
 </html>
 """
-
-    os.makedirs("search", exist_ok=True)
+    os.makedirs("game/search", exist_ok=True)
 
     filename = safe_filename(query)
 
-    with open(f"search/{filename}.html", "w", encoding="utf-8") as f:
+    with open(f"game/search/{filename}.html", "w", encoding="utf-8") as f:
+
         f.write(html)
 
     print("search page created:", filename)
