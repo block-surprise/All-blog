@@ -1,3 +1,4 @@
+import json
 import os
 import re
 from datetime import datetime
@@ -84,7 +85,26 @@ for root, dirs, files in os.walk(POST_DIR):
 # =====================
 articles = sorted(articles, key=lambda x: x["ts"], reverse=True)
 
+# =====================
+# 最新記事JSON生成
+# =====================
+latest = []
 
+for a in articles[:5]:
+    latest.append({
+        "title": a["title"],
+        "url": "/" + a["path"]
+    })
+
+os.makedirs("game", exist_ok=True)
+
+with open("game/latest.json", "w", encoding="utf-8") as f:
+    json.dump(
+        latest,
+        f,
+        ensure_ascii=False,
+        indent=2
+    )
 # =====================
 # カード生成
 # =====================
