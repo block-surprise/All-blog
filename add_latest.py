@@ -1,32 +1,8 @@
 import os
 
-TARGET_DIR = "game/posts"
+TARGET_DIR = "game/posts/minecraft"
 
-OLD_HTML = """
-<h2>最新記事</h2>
-<div id="latest-posts">
-読み込み中...
-</div>
-
-<script src="/game/latest.js"></script>
-"""
-
-NEW_HTML = """
-<div class="latest-box">
-
-<h2>最新記事</h2>
-
-<div id="latest-posts">
-読み込み中...
-</div>
-
-</div>
-
-<script src="/game/latest.js"></script>
-"""
-
-CSS = """
-
+OLD_CSS = """
 .latest-box {
     margin-top: 30px;
     padding-top: 20px;
@@ -63,8 +39,55 @@ CSS = """
     color: #666;
     margin-top: 4px;
 }
-
 """
+
+NEW_CSS = """
+.latest-box {
+    margin-top: 30px;
+    padding: 16px;
+    background: #fff;
+    border-radius: 12px;
+    border: 1px solid #e5e7eb;
+}
+
+.latest-box h2 {
+    font-size: 18px;
+    margin-bottom: 12px;
+}
+
+#latest-posts {
+    margin-top: 10px;
+}
+
+.latest-item {
+    display: block;
+    padding: 12px 4px;
+    text-decoration: none;
+    color: #111;
+}
+
+.latest-item:not(:last-child) {
+    border-bottom: 1px solid #e5e7eb;
+}
+
+.latest-item:hover {
+    background: #f8fafc;
+}
+
+.latest-title {
+    font-size: 14px;
+    font-weight: 600;
+    line-height: 1.5;
+}
+
+.latest-date {
+    font-size: 12px;
+    color: #777;
+    margin-top: 4px;
+}
+"""
+
+count = 0
 
 for root, dirs, files in os.walk(TARGET_DIR):
 
@@ -78,25 +101,15 @@ for root, dirs, files in os.walk(TARGET_DIR):
         with open(path, "r", encoding="utf-8") as f:
             html = f.read()
 
-        changed = False
+        if OLD_CSS not in html:
+            continue
 
-        # 最新記事ブロック置換
-        if OLD_HTML in html:
-            html = html.replace(OLD_HTML, NEW_HTML)
-            changed = True
+        html = html.replace(OLD_CSS, NEW_CSS)
 
-        # CSS追加（未追加時のみ）
-        if ".latest-box" not in html and "</style>" in html:
-            html = html.replace(
-                "</style>",
-                CSS + "\n</style>"
-            )
-            changed = True
+        with open(path, "w", encoding="utf-8") as f:
+            f.write(html)
 
-        if changed:
-            with open(path, "w", encoding="utf-8") as f:
-                f.write(html)
+        count += 1
+        print("updated:", path)
 
-            print("updated:", path)
-
-print("完了")
+print(f"完了: {count}件")
