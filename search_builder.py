@@ -7,6 +7,28 @@ import re
 def safe_filename(query):
     return re.sub(r'[^a-zA-Z0-9ぁ-んァ-ン一-龥_-]', '_', query)
 
+import os
+
+import re
+
+# =====================
+
+# 手動キーワード（ここで管理）
+
+# =====================
+
+KEYWORDS = [
+    "マイクラ",
+    "初心者",
+    "自動装置",
+    "食料",
+    "建築",
+    "鉄トラップ",
+    "サバイバル",
+    "経験値",
+    "全自動装置"
+]
+
 
 # =====================
 # 検索マッチ
@@ -154,17 +176,28 @@ header {{
 
     print("search page created:", filename)
     
-def build_all_search_pages(articles, keywords):
+# =====================
+
+# 一括生成（ここだけ呼ぶ）
+
+# =====================
+
+def build_all_search_pages(articles):
 
     os.makedirs("game/search", exist_ok=True)
 
-    # 古い検索ページ削除
+    # 古い削除
+
     for f in os.listdir("game/search"):
+
         if f.endswith(".html"):
+
             os.remove(os.path.join("game/search", f))
 
-    # 手動キーワードで生成
-    for kw in keywords:
+    # ★ここで手動キーワードを使う
+
+    for kw in KEYWORDS:
+
         build_search_page(kw, articles)
 
-    print("search pages created:", len(keywords))
+    print("search pages created:", len(KEYW
