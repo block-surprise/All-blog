@@ -153,3 +153,28 @@ header {{
         f.write(html)
 
     print("search page created:", filename)
+    def build_all_search_pages(articles):
+
+    os.makedirs("game/search", exist_ok=True)
+
+    keywords = set()
+
+    # タイトルからキーワード抽出
+    for a in articles:
+        for word in a["title"].split():
+            if len(word) >= 2:
+                keywords.add(word)
+
+    # 既存検索ページ削除（ゴミ防止）
+    for f in os.listdir("game/search"):
+        if f.endswith(".html"):
+            os.remove(os.path.join("game/search", f))
+
+    # 新規生成
+    for kw in keywords:
+
+        filename = safe_filename(kw)
+
+        build_search_page(kw, articles)
+
+    print("all search pages rebuilt:", len(keywords))
