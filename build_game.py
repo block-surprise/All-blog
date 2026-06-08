@@ -91,7 +91,7 @@ articles = sorted(articles, key=lambda x: x["ts"], reverse=True)
 cards = ""
 for a in articles:
     cards += f"""
-    <a class="card" href="{a['path']}">
+    <a class="card" href="/{a['path']}"">
         <div class="tag" style="background:{a['color']}">{a['cat']}</div>
         <div class="title">{a['title']}</div>
         <div class="meta">{a['time']}</div>
