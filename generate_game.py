@@ -95,15 +95,7 @@ def get_random_image():
 
 image_url = get_random_image()
 
-articles.append({
-    "title": title,
-    "body": body,
-    "path": filename,
-    "ts": datetime.now().timestamp(),
-    "cat": category,
-    "color": "#dc2626",
-    "time": datetime.now().strftime("%m-%d %H:%M")
-})
+
 # =====================
 # タイトル生成
 # =====================
@@ -380,5 +372,14 @@ with open(filename, "w", encoding="utf-8") as f:
 
 print("記事生成完了:", title)
 
+articles.append({
+    "title": title,
+    "body": body,
+    "path": filename,
+    "ts": datetime.now().timestamp(),
+    "cat": category,
+    "color": "#dc2626",
+    "time": datetime.now().strftime("%m-%d %H:%M")
+})
 
 build_all_search_pages(articles)
