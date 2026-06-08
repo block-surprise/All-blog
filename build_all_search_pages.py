@@ -1,56 +1,24 @@
-import os
-import re
-from collections import Counter
-
-SEARCH_DIR = "game/search"
-
-# =====================
-# キーワード抽出（簡易版）
-# =====================
-def extract_keywords(articles):
-    words = []
-
-    for a in articles:
-        text = (a.get("title", "") + " " + a.get("body", "")).lower()
-
-        # 日本語・英語・数字だけ残す
-        text = re.sub(r"[^\wぁ-んァ-ン一-龥]", " ", text)
-
-        tokens = text.split()
-
-        for t in tokens:
-            if len(t) >= 2:
-                words.append(t)
-
-    # 出現回数順
-    return [w for w, _ in Counter(words).most_common(20)]
-
-
-# =====================
-# searchページ削除（全部作り直し）
-# =====================
-def clear_search_dir():
-    if not os.path.exists(SEARCH_DIR):
-        return
-
-    for f in os.listdir(SEARCH_DIR):
-        if f.endswith(".html"):
-            os.remove(os.path.join(SEARCH_DIR, f))
-
-
-# =====================
-# searchページ生成
-# =====================
 def build_all_search_pages(articles):
 
-    # ① 一旦全部削除（これが「捨てる」部分）
-    clear_search_dir()
+    os.makedirs("game/search", exist_ok=True)
 
-    # ② キーワード作る
-    keywords = extract_keywords(articles)
+    keywords = set()
 
-    print("keywords:", keywords)
+    for a in articles:
+        for word in a["title"].split():
+            if len(word) >= 2:
+                keywords.add(word)
 
-    # ③ 各キーワードでページ生成
-    for q in keywords:
-        search_builder(q, articles)
+    # 既存削除
+    for f in os.listdir("game/search"):
+        if f.endswith(".html"):
+            os.remove(os.path.join("game/search", f))
+
+    # 再生成
+    for kw in keywords:
+
+        filename = safe_filename(kw)
+
+        build_search_page(kw, articles)
+
+    print("all search pages rebuilt:", len(keywords))
