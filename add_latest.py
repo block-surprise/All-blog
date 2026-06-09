@@ -2,6 +2,7 @@ import os
 
 TARGET_DIR = "posts"
 
+# 挿入したい正しいブロック
 INSERT_BLOCK = """<div style="margin-top: 40px; padding: 24px; background: #fafafa; border: 1px solid #e5e7eb; border-radius: 12px; display: flex; flex-direction: column; gap: 16px;">
   <div style="font-size: 11px; color: #4f46e5; font-weight: bold; letter-spacing: 0.05em; text-transform: uppercase;">
     この記事を書いた人
@@ -20,18 +21,14 @@ INSERT_BLOCK = """<div style="margin-top: 40px; padding: 24px; background: #fafa
       詳細を見る
     </a>
   </div>
-</div>
-"""
+</div>"""
 
 count = 0
 
 for root, dirs, files in os.walk(TARGET_DIR):
     for file in files:
-        # HTMLファイル以外はスキップ
         if not file.endswith(".html"):
             continue
-
-        # index.html は除外
         if file == "index.html":
             continue
 
@@ -40,24 +37,36 @@ for root, dirs, files in os.walk(TARGET_DIR):
         with open(path, "r", encoding="utf-8") as f:
             html = f.read()
 
-        # すでに挿入されている場合はスキップ
-        if "この記事を書いた人" in html:
-            continue
+        # 【ステップ1】すでに間違った位置に入ってしまったブロックがあれば一旦削除
+        # 前後に改行が含まれている場合を考慮して、ブロック単体を取り除く
+        if INSERT_BLOCK in html:
+            html = html.replace(INSERT_BLOCK, "")
 
-        # </body> の直前に挿入する
-        if "</body>" in html:
-            html = html.replace(
-                "</body>",
-                INSERT_BLOCK + "\n</body>"
-            )
+        # 【ステップ2】「<h2>まとめ</h2>」の後の最初の「</p>」を探して、その直後に挿入する
+        if "<h2>まとめ</h2>" in html:
+            # 「<h2>まとめ</h2>」の開始位置を見つける
+            summary_idx = html.find("<h2>まとめ</h2>")
+            
+            # その位置以降で、最初の「</p>」の位置を見つける
+            p_close_idx = html.find("</p>", summary_idx)
+            
+            if p_close_idx != -1:
+                # 「</p>」の文字数（4文字）分進めた位置を挿入ポイントにする
+                insert_pos = p_close_idx + 4
+                
+                # スライスを使って、</p> の直後にパーツを滑り込ませる
+                html = html[:insert_pos] + "\n\n" + INSERT_BLOCK + html[insert_pos:]
+            else:
+                # 万が一 </p> が見つからない場合は安全のためスキップ
+                continue
         else:
-            # もし </body> タグがない特殊なHTMLファイルの場合は、ファイルの最末尾に追加
-            html = html + "\n" + INSERT_BLOCK
+            # <h2>まとめ</h2> がない記事の場合はスキップ
+            continue
 
         with open(path, "w", encoding="utf-8") as f:
             f.write(html)
 
         count += 1
-        print("updated:", path)
+        print("fixed & updated:", path)
 
 print(f"完了: {count}件")
