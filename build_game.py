@@ -129,6 +129,7 @@ html = f"""
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta charset="UTF-8">
 <title>ひとりゲームニュース</title>
+<meta name="description" content="マインクラフト攻略・建築・自動装置など最新情報や攻略法をわかりやすく解説するゲームニュースサイト">
 <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3571574988222927"crossorigin="anonymous"></script>
 <link rel="icon" type="image/png" href="/favicon.png">
 <link rel="apple-touch-icon" href="/favicon.png">
