@@ -356,7 +356,7 @@ header h1 {{
     <a href="/search/OpenAI">OpenAI</a>
     <a href="/search/スポーツ">スポーツ</a>
     <a href="/search/電車">電車</a>
-    <a href="/search/ゲーム">ゲーム</a>
+    <a href="/game/">ゲーム</a>
     <a href="/search/AI">AI</a>
   </div>
 </div>
