@@ -1,6 +1,6 @@
 import os
 
-TARGET_DIR = "game/posts"
+TARGET_DIR = "posts"
 
 INSERT_BLOCK = """\
 <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3571574988222927" crossorigin="anonymous"></script>
