@@ -4,6 +4,7 @@ import re
 import time
 import hashlib
 import urllib.parse
+import subprocess  # ★Git操作を強制するために追加
 from datetime import datetime
 from zoneinfo import ZoneInfo
 import feedparser
@@ -80,19 +81,17 @@ def get_category(text):
 # 【ニュースサイト直撃】本物の記事写真を引っこ抜くシステム
 # =====================
 def get_news_image(article_url):
-    """Googleニュースの暗号URLを限界まで追跡し、本物の配信元サイトのメイン写真を抽出する"""
+    """Googleニュースの暗号URLを追跡し、本物の配信元サイトのメイン写真を抽出する"""
     try:
         headers = {
             "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
             "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8"
         }
         
-        # 1. Googleニュースのクッションページを踏んで、実際のサイトにリダイレクト(追跡)させる
         session = requests.Session()
         res = session.get(article_url, headers=headers, timeout=10, allow_redirects=True)
         final_url = res.url
         
-        # もしGoogleニュースのドメインから脱出できていなければ、HTML内の本番リンクを強引に探す
         soup = BeautifulSoup(res.text, "html.parser")
         if "news.google.com" in final_url:
             a_tag = soup.find("a", rel="external nofollow") or soup.find("main").find("a") if soup.find("main") else None
@@ -104,8 +103,7 @@ def get_news_image(article_url):
 
         print("到達した本物のニュースサイトURL:", final_url)
 
-        # 2. 本物のサイトのメタタグ（OGP：SNSでシェアした時に出るデカい画像）を最優先で引っこ抜く
-        # これが「記事の主役の写真」を一番綺麗に、確実に指し示しています。
+        # OGP（SNS用のデカいメイン画像）を狙い撃ち
         for property_name in ["og:image", "twitter:image", "thumbnail"]:
             og_image = soup.find("meta", property=lambda x: x and property_name in x.lower()) or \
                        soup.find("meta", attrs={"name": lambda x: x and property_name in x.lower()})
@@ -113,11 +111,11 @@ def get_news_image(article_url):
                 img_url = og_image["content"].strip()
                 img_url = urllib.parse.urljoin(final_url, img_url)
                 
-                # 【超重要】ファビコンやサイトロゴ、ナビ用アイコンなどのゴミ画像を完全に拒絶する
+                # ファビコンやロゴを完全に拒絶
                 if not any(x in img_url.lower() for x in ["favicon", "icon", "logo", "avatar", "sprite", "loader", "nav", "g-header"]):
                     return img_url, final_url
 
-        # 3. 万が一メタデータに入っていなければ、本文エリア（article等）の最初の通常画像を狙う
+        # 本文エリアの最初の通常画像
         main_content = soup.find(["article", "main", "div", "section"], class_=lambda x: x and any(c in x.lower() for c in ["article", "post", "content", "entry", "main", "body"]))
         target_soup = main_content if main_content else soup
 
@@ -139,7 +137,6 @@ def download_image(url, save_dir="images"):
         if not os.path.exists(save_dir):
             os.makedirs(save_dir)
 
-        # 画像URLの文字から固有のハッシュを作成（これで上書きや重複エラーが消えます）
         ext = "jpg"
         file_name = f"{hashlib.md5(url.encode()).hexdigest()}.{ext}"
         save_path = os.path.join(save_dir, file_name)
@@ -156,7 +153,7 @@ def download_image(url, save_dir="images"):
     return None
 
 
-# 確定引用画像の取得処理を実行
+# 画像取得処理を実行
 image_url, final_source_url = get_news_image(source_url)
 
 local_image_path = None
@@ -164,7 +161,6 @@ if image_url:
     print("本物のニュース写真を発見しました:", image_url)
     local_image_path = download_image(image_url)
 
-# 万が一画像が全く抜けなかった場合の保険（フリー画像）
 if not local_image_path:
     print("画像が取得できなかったため、一時的なイメージ画像を割り当てます。")
     seed_num = int(hashlib.md5(clean_topic.encode()).hexdigest(), 16) % 1000
@@ -192,7 +188,7 @@ category = get_category(content)
 
 
 # =====================
-# HTML生成（あなたのオリジナルデザイン・追加パーツを完全維持）
+# HTML生成（オリジナルデザイン完全維持）
 # =====================
 def build_html(title, body, category, local_image_path, source_url, source_name):
     image_html = ""
@@ -376,3 +372,12 @@ with open(filename, "w", encoding="utf-8") as f:
     f.write(build_html(title, body, category, local_image_path, final_source_url, source_name))
 
 print("記事生成完了:", title)
+
+
+# =====================
+# ★【最重要】新画像をGitHubに100%強制認識させるコマンド
+# =====================
+if local_image_path:
+    # Gitに対して、imagesフォルダに入った新しい画像を強制的に追跡リストに入れるよう命令します
+    subprocess.run(["git", "add", "-f", "images/"], check=False)
+    print("Gitに新画像の追跡を強制しました。")
