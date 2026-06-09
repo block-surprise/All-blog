@@ -381,7 +381,7 @@ from zoneinfo import ZoneInfo
 date = datetime.now(
     ZoneInfo("Asia/Tokyo")
 ).strftime("%Y-%m-%d-%H%M%S")
-filename = f"posts/{category}/{date}.html"
+filename = f"/posts/{category}/{date}.html"
 
 with open(filename, "w", encoding="utf-8") as f:
     f.write(build_html(title, body, category, image_url))
