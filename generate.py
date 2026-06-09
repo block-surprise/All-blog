@@ -318,6 +318,20 @@ h2 {{
     font-size: 18px;
     margin-top: 26px;
 }}
+.related {{
+    margin-top: 30px;
+    padding: 14px;
+    background: #f9fafb;
+    border-radius: 12px;
+}}
+
+.related a {{
+    display: block;
+    color: #4f46e5;
+    text-decoration: none;
+    font-size: 14px;
+    margin: 4px 0;
+}}
 </style>
 </head>
 
@@ -345,7 +359,17 @@ h2 {{
 
 </div>
 </div>
-
+<div style="margin-top: 40px; padding: 18px; background: #fafafa; border: 1px solid #eee; border-radius: 12px; display: flex; justify-content: space-between; align-items: center; gap: 16px;">
+  <div>
+    <div style="font-size: 11px; color: #4f46e5; font-weight: bold; letter-spacing: 0.05em; margin-bottom: 2px;">この記事を書いた人</div>
+    <div style="font-size: 15px; font-weight: bold; color: #111;">管理人</div>
+  </div>
+  
+  
+  <a href="/profile.html" style="display: inline-block; font-size: 13px; color: white; background: #4f46e5; text-decoration: none; padding: 8px 16px; border-radius: 8px; font-weight: bold; white-space: nowrap;">
+    詳細を見る
+  </a>
+</div>
 </body>
 </html>
 """
