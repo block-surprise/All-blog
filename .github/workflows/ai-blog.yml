@@ -28,12 +28,12 @@ jobs:
           python-version: "3.10"
 
       # =====================
-      # 依存関係インストール
+      # 依存関係インストール（修正箇所★）
       # =====================
       - name: Install dependencies
         run: |
           pip install --upgrade pip
-          pip install google-generativeai feedparser requests markdown
+          pip install google-generativeai feedparser requests markdown beautifulsoup4
 
       # =====================
       # 記事生成
@@ -56,12 +56,13 @@ jobs:
         run: python .github/workflows/generate_sitemap.py
 
       # =====================
-      # commit & push
+      # commit & push（修正箇所★）
       # =====================
       - name: Commit and push
         run: |
           git config user.name "ai-bot"
           git config user.email "bot@example.com"
-          git add posts search index.html sitemap.xml .github/workflows/*.yml
-          git commit -m "auto update blog" || echo "no changes"
+          # 自動生成された画像フォルダ「images」も忘れずにコミット対象（git add）に追加します
+          git add posts search index.html sitemap.xml images .github/workflows/*.yml
+          git commit -m "Auto generated article and images" || echo "No changes to commit"
           git push
