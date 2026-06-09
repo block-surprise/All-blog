@@ -8,6 +8,7 @@ from datetime import datetime
 from zoneinfo import ZoneInfo
 import feedparser
 import requests
+from bs4 import BeautifulSoup
 import google.generativeai as genai
 
 # =====================
@@ -33,7 +34,6 @@ def generate_text(prompt):
                 return response.text.strip()
         except Exception as e:
             print("failed:", model_name, e)
-            # Quota超過なら少し待つ
             if "429" in str(e):
                 time.sleep(10)
             continue
@@ -41,18 +41,27 @@ def generate_text(prompt):
 
 
 # =====================
-# RSS取得
+# RSS取得 ＆ ニュース元URLの解析
 # =====================
 rss_url = "https://news.google.com/rss?hl=ja&gl=JP&ceid=JP:ja"
 feed = feedparser.parse(rss_url)
 
 if not feed.entries:
-    topic = "最新テックニュース"
+    chosen_entry = None
+    clean_topic = "最新テックニュース"
+    source_url = "https://news.google.com/"
+    source_name = "Googleニュース"
 else:
-    topic = random.choice(feed.entries[:10]).title
+    chosen_entry = random.choice(feed.entries[:10])
+    topic = chosen_entry.title
+    clean_topic = topic.split(" - ")[0].split("｜")[0].strip()
+    # ニュースの元記事URLと配信メディア名を取得
+    source_url = chosen_entry.link
+    source_name = chosen_entry.get("source", {}).get("title", "ニュース配信元")
 
-# ノイズ除去
-clean_topic = topic.split(" - ")[0].split("｜")[0].strip()
+print("選択されたテーマ:", clean_topic)
+print("引用元URL:", source_url)
+print("引用元メディア:", source_name)
 
 
 # =====================
@@ -60,157 +69,91 @@ clean_topic = topic.split(" - ")[0].split("｜")[0].strip()
 # =====================
 def get_category(text):
     text = text.lower()
-    if any(w in text for w in [
-        "ai", "chatgpt", "openai", "gpt", "gemini", "claude", "人工知能", "llm"
-    ]):
+    if any(w in text for w in ["ai", "chatgpt", "openai", "gpt", "gemini", "claude", "人工知能", "llm"]):
         return "ai"
-    elif any(w in text for w in [
-        "iphone", "android", "ipad", "macbook", "pixel", "galaxy", "スマホ", "ガジェット"
-    ]):
+    elif any(w in text for w in ["iphone", "android", "ipad", "macbook", "pixel", "galaxy", "スマホ", "ガジェット"]):
         return "gadgets"
     else:
         return "news"
 
 
 # =====================
-# 画像（Wikipediaから取得 ＆ 自動ダウンロード）
+# 【確定引用システム】ニュースサイトから画像を自動抽出して保存
 # =====================
-def get_wikipedia_image_and_page(query):
-    """Wikipediaから画像のURLと、その記事ページのURLをセットで取得する"""
-    try:
-        url = (
-            "https://ja.wikipedia.org/api/rest_v1/page/summary/"
-            + urllib.parse.quote(query)
-        )
-        res = requests.get(url, timeout=5)
-        if res.status_code != 200:
-            return None, None
-
-        data = res.json()
-        image_url = None
-        # 元の記事のURLを取得（デフォルトはWikipediaトップ）
-        page_url = data.get("content_urls", {}).get("desktop", {}).get("page", "https://ja.wikipedia.org/")
-
-        if "thumbnail" in data:
-            image_url = data["thumbnail"]["source"]
-
-        return image_url, page_url
-    except Exception as e:
-        print("wiki image error:", e)
-    return None, None
-
 def download_image(url, save_dir="images"):
-    """画像をローカルにダウンロードして保存し、ブログ用のパスを返す"""
+    """画像をローカルにダウンロードして保存する"""
     try:
         if not os.path.exists(save_dir):
             os.makedirs(save_dir)
 
-        # 拡張子の取得 (.jpg など)
-        ext = url.split(".")[-1].split("?")[0]
-        if len(ext) > 4 or "/" in ext:
+        ext = url.split(".")[-1].split("?")[0].lower()
+        if ext not in ["jpg", "jpeg", "png", "webp"]:
             ext = "jpg"
 
-        # URLのハッシュ値から被らないファイル名を作る
         file_name = f"{hashlib.md5(url.encode()).hexdigest()}.{ext}"
         save_path = os.path.join(save_dir, file_name)
 
-        # ダウンロード実行
-        res = requests.get(url, timeout=10)
+        headers = {"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36"}
+        res = requests.get(url, headers=headers, timeout=10)
         if res.status_code == 200:
             with open(save_path, "wb") as f:
                 f.write(res.content)
             print(f"画像を保存しました: {save_path}")
-            # HTMLで読み込めるように、ルートパス形式で返す
             return f"/{save_dir}/{file_name}"
     except Exception as e:
         print("画像のダウンロードに失敗しました:", e)
     return None
 
-def make_image_query(title):
-    m = re.search(r'「(.*?)」', title)
-    if m:
-        return m.group(1)
+def get_news_image(article_url):
+    """ニュース記事のページを開き、アイキャッチ画像（OGP画像）を確定で抽出する"""
+    try:
+        headers = {"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36"}
+        # Googleニュースの転送URLから実際の記事URLを追跡して取得
+        res = requests.get(article_url, headers=headers, timeout=8, allow_redirects=True)
+        final_url = res.url
+        
+        soup = BeautifulSoup(res.text, "html.parser")
+        
+        # ニュースサイトのメタタグ（OGP）から高画質なアイキャッチ画像を探す
+        og_image = soup.find("meta", property="og:image")
+        if og_image and og_image.get("content"):
+            return og_image["content"], final_url
+            
+        # 見つからない場合はページ内の最初の大きな画像を探す
+        for img in soup.find_all("img"):
+            src = img.get("src")
+            if src and src.startswith("http") and not any(x in src for x in ["icon", "logo", "avatar"]):
+                return src, final_url
+                
+    except Exception as e:
+        print("ニュースサイトからの画像抽出エラー:", e)
+    return None, article_url
 
-    title = re.sub(r'（.*?）', '', title)
-    title = re.sub(r'\(.*?\)', '', title)
-
-    separators = ["、", "。", "…", "-", "｜", ":", "："]
-    for s in separators:
-        title = title.split(s)[0]
-
-    return title.strip()[:15]
-
-
-# 画像情報の取得と保存
-image_query = make_image_query(clean_topic)
-print("image query:", image_query)
-
-remote_image_url, wikipedia_page_url = get_wikipedia_image_and_page(image_query)
+# 確定引用画像の取得処理
+remote_image_url, final_source_url = get_news_image(source_url)
 
 local_image_path = None
 if remote_image_url:
-    print("Wikipedia image found:", remote_image_url)
-    # ここで自動保存の関数を動かします
+    print("ニュースサイト内で画像を発見:", remote_image_url)
     local_image_path = download_image(remote_image_url)
 else:
-    print("No image found")
+    print("ニュースサイト内に画像が見つかりませんでした")
 
 
 # =====================
 # タイトル生成
 # =====================
-title_prompt = f"""
-あなたはSEO編集者です。
-
-テーマ：{clean_topic}
-
-30文字以内のクリックされるタイトルを1つだけ出力してください。
-記号・補足・説明は禁止。
-"""
-
-title = generate_text(title_prompt)
-if not title:
-    title = clean_topic
-
+title_prompt = f"あなたはSEO編集者です。\nテーマ：{clean_topic}\n30文字以内のクリックされるタイトルを1つだけ出力してください。\n記号・補足・説明は禁止。"
+title = generate_text(title_prompt) or clean_topic
 title = title.replace("\n", "")
 
 
 # =====================
 # 本文生成（HTML）
 # =====================
-body_prompt = f"""
-あなたはプロのテックメディア編集者です。
-
-テーマ：{clean_topic}
-
-以下をHTMLで書いてください：
-
-<h2>概要</h2>
-<p></p>
-
-<h2>背景</h2>
-<p></p>
-
-<h2>詳細解説</h2>
-<p></p>
-
-<h2>具体例</h2>
-<p></p>
-
-<h2>今後の影響</h2>
-<p></p>
-
-<h2>まとめ</h2>
-<p>3行で簡潔に</p>
-
-条件：
-- 1500〜3500文字
-- HTMLのみ
-- ```禁止
-"""
-body = generate_text(body_prompt)
-if body:
-    body = body.replace("```html", "").replace("```", "")
+body_prompt = f"あなたはプロのテックメディア編集者です。\nテーマ：{clean_topic}\n以下をHTMLで書いてください：\n<h2>概要</h2>\n<p></p>\n<h2>背景</h2>\n<p></p>\n<h2>詳細解説</h2>\n<p></p>\n<h2>具体例</h2>\n<p></p>\n<h2>今後の影響</h2>\n<p></p>\n<h2>まとめ</h2>\n<p>3行で簡潔に</p>\n条件：\n- 1500〜3500文字\n- HTMLのみ\n- ```禁止"
+body = generate_text(body_prompt) or ""
+body = body.replace("```html", "").replace("```", "")
 
 content = f"{clean_topic} {body}"
 category = get_category(content)
@@ -219,14 +162,14 @@ category = get_category(content)
 # =====================
 # HTML生成
 # =====================
-def build_html(title, body, category, local_image_path, wikipedia_page_url):
+def build_html(title, body, category, local_image_path, source_url, source_name):
     image_html = ""
-    if local_image_path and wikipedia_page_url:
-        # ダウンロードした画像を表示し、その下にデザインを崩さないよう小さめの文字で出典を挿入
+    if local_image_path:
+        # ニュースサイトから取得した画像をローカルパスで表示し、その真下にニュース元への引用リンクを生成
         image_html = f'''
 <img src="{local_image_path}" alt="{title}" loading="lazy">
 <p style="text-align: center; font-size: 12px; color: #666; margin: 4px 0 20px 0;">
-  出典：<a href="{wikipedia_page_url}" target="_blank" rel="noopener" style="color: #666; text-decoration: underline;">フリー百科事典『ウィキペディア（Wikipedia）』</a>
+  出典：<a href="{source_url}" target="_blank" rel="noopener" style="color: #666; text-decoration: underline;">{source_name}</a>
 </p>
 '''
 
@@ -317,8 +260,7 @@ h2 {{
     padding-left: 10px;
     font-size: 18px;
     margin-top: 26px;
-}}
-.related {{
+}}.related {{
     margin-top: 30px;
     padding: 14px;
     background: #f9fafb;
@@ -372,6 +314,9 @@ h2 {{
 </div>
 </body>
 </html>
+
+</body>
+</html>
 """
 
 
@@ -384,6 +329,8 @@ date = datetime.now(ZoneInfo("Asia/Tokyo")).strftime("%Y-%m-%d-%H%M%S")
 filename = f"posts/{category}/{date}.html"
 
 with open(filename, "w", encoding="utf-8") as f:
-    f.write(build_html(title, body, category, local_image_path, wikipedia_page_url))
+    f.write(build_html(title, body, category, local_image_path, final_source_url, source_name))
 
 print("記事生成完了:", title)
+
+
