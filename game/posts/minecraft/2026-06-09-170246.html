@@ -1,0 +1,178 @@
+
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>【マイクラ】初心者向け！全自動アイテム仕分け機の作り方徹底解説</title>
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3571574988222927"crossorigin="anonymous"></script>
+<link rel="icon" type="image/png" href="/favicon.png">
+<link rel="apple-touch-icon" href="/favicon.png">
+<style>
+body {
+    margin: 0;
+    font-family: sans-serif;
+    background: #f4f6f8;
+    color: #111;
+    line-height: 1.8;
+}
+
+header {
+    background: #111;
+    color: white;
+    padding: 12px;
+    text-align: center;
+}
+
+.container {
+    max-width: 800px;
+    margin: auto;
+    padding: 14px;
+}
+
+.article {
+    background: white;
+    padding: 18px;
+    border-radius: 12px;
+}
+
+img {
+    width: 100%;
+    border-radius: 10px;
+}
+
+.category {
+    display: inline-block;
+    background: #4f46e5;
+    color: white;
+    padding: 4px 10px;
+    border-radius: 999px;
+    font-size: 12px;
+}
+
+h1 {
+    font-size: 20px;
+    line-height: 1.4;
+    margin-top: 12px;
+    margin-bottom: 18px;
+}
+
+h2 {
+    font-size: 16px;
+    border-left: 4px solid #4f46e5;
+    padding-left: 10px;
+    margin-top: 24px;
+    margin-bottom: 10px;
+}
+.latest-box {
+    margin-top: 30px;
+    padding: 16px;
+    background: #fff;
+    border-radius: 12px;
+    border: 1px solid #e5e7eb;
+}
+
+.latest-box h2 {
+    font-size: 18px;
+    margin-bottom: 12px;
+}
+
+#latest-posts {
+    margin-top: 10px;
+}
+
+.latest-item {
+    display: block;
+    padding: 12px 4px;
+    text-decoration: none;
+    color: #111;
+}
+
+.latest-item:not(:last-child) {
+    border-bottom: 1px solid #e5e7eb;
+}
+
+.latest-item:hover {
+    background: #f8fafc;
+}
+
+.latest-title {
+    font-size: 14px;
+    font-weight: 600;
+    line-height: 1.5;
+}
+
+.latest-date {
+    font-size: 12px;
+    color: #777;
+    margin-top: 4px;
+}
+</style>
+</head>
+
+<body>
+
+<header>ひとりゲームニュース</header>
+
+<div class="container">
+<div class="article">
+
+<img src="/images/a.jpeg" alt="【マイクラ】初心者向け！全自動アイテム仕分け機の作り方徹底解説" loading="lazy">
+
+<div class="category">minecraft</div>
+
+<h1>【マイクラ】初心者向け！全自動アイテム仕分け機の作り方徹底解説</h1>
+
+<h2>1. マインクラフト全自動仕分け機の仕組みを初心者向けに超解説！</h2>
+<p>マインクラフトでアイテム整理に悩む方は多いはずです。チェストが溢れかえり、必要な素材を探すのに時間がかかる……そんなストレスを解消してくれるのが「全自動仕分け機」です。仕組みは意外とシンプルで、レッドストーン回路の「コンパレーター（比較器）」の性質を利用しています。</p>
+<p>具体的には、コンパレーターがチェストの中身を検知し、特定のアイテム数に達したときだけ信号を出してホッパーを動かすという仕組みです。ホッパーの中にある特定のアイテムを「フィルター（仕分け対象）」として登録することで、チェストに流れてきたアイテムの中から、そのフィルターと一致するものだけをチェストに引き込みます。これによって、仕分け機に流し込むだけで、自動的にカテゴリーごとに整理されるという夢のような環境が作れるのです。</p>
+
+<h2>2. 【準備編】必要なアイテムと効率よく集めるためのチェックリスト</h2>
+<p>まずは必要な資材を揃えましょう。以下のリストは、1つの仕分けユニット（1種類を仕分ける分）に必要な最低限の素材です。これを必要な数だけ掛ける計算で準備してください。</p>
+<ul>
+    <li>ホッパー：4〜5個</li>
+    <li>チェスト：2個（大チェスト1個分）</li>
+    <li>レッドストーンの松明：1個</li>
+    <li>レッドストーンダスト：2個</li>
+    <li>レッドストーンコンパレーター：1個</li>
+    <li>レッドストーンリピーター：1個</li>
+    <li>建築用ブロック（土や石など）：適量</li>
+    <li>名付け済みのアイテム（仕分けフィルター用）：41個以上（※後述）</li>
+</ul>
+<p>効率よく集めるコツは、村人との取引やブランチマイニングです。特にホッパーは鉄を大量に消費するため、アイアンゴーレムトラップを作っておくと非常に効率的です。また、レッドストーン系素材は地下深くまで掘り進めばすぐに見つかります。最初は5つ分程度のユニットから作り始め、徐々に拡張していくのが挫折しないコツです。</p>
+
+<h2>3. 初心者でも失敗しない！全自動仕分け機の作り方（ステップバイステップ手順）</h2>
+<p>初心者の方が最も失敗しやすいのは「ホッパーの向き」です。まずは以下の手順で慎重に進めてみてください。</p>
+<ol>
+    <li><strong>土台作り：</strong>チェストを設置し、その背面にホッパーをチェストに向けて接続します。</li>
+    <li><strong>回路エリア作成：</strong>チェストの上の段に、横向きにホッパーを並べます。これが「アイテムの搬送路」になります。</li>
+    <li><strong>コンパレーターの設置：</strong>搬送路ホッパーの横にコンパレーターを設置します。向きは搬送路ホッパーから信号が出るようにします。</li>
+    <li><strong>フィルターの設定：</strong>ここが重要です！ホッパーの中に、仕分けたいアイテムを入れます。ここで「ニックネーム（金床で名前を変えたゴミアイテム）」を4つ、仕分けたいアイテムを1つ（またはそれ以上）入れることで、フィルターが機能します。</li>
+    <li><strong>レッドストーン配置：</strong>コンパレーターの先にリピーター、レッドストーンダストを配置し、一番下のホッパーに松明が当たるように接続します。</li>
+</ol>
+<p>最後に搬送路のホッパーにアイテムを流し、正常に下のチェストに移動するか確認しましょう。</p>
+
+<h2>4. 設置後の動作チェックとよくあるトラブル解消法</h2>
+<p>完成した後に動かない場合、まずは「ホッパーの向き」を確認してください。マインクラフトのホッパーは、接続したブロックの方を向く性質があります。もしアイテムがチェストに入らず、ホッパーの中に詰まったままであれば、向きが間違っている可能性が高いです。</p>
+<p>また、「アイテムが混ざってしまう」というトラブルは、フィルター用アイテムの設定ミスが原因です。フィルター用ホッパーの中身が合計45個を超えてしまうと回路が誤作動を起こします。基本は「一番左のスロットに名前付きゴミアイテムを18・1・1・1・1」の合計22個入れるのが標準的な設計です。一度詰まってしまった場合は、ホッパーの中身を一度すべて取り出し、リセットしてから再設定してください。</p>
+
+<h2>5. さらに拡張！仕分け機を使いこなして効率を最大化するコツ</h2>
+<p>単なる仕分け機としてだけでなく、さらに効率を上げるために「ラージチェストの連結」や「ゴミ処理機能」を組み合わせましょう。</p>
+<p>よく使う石や土などはチェストを縦に2〜3段並べて大容量化し、逆にあまり使わないアイテムは一番端に「溶岩式ゴミ箱」を設置して、仕分けできなかったアイテムをすべて消失させる仕組みを作るのがプロのやり方です。また、仕分け機の上をホッパー付きトロッコが走るように設計すれば、拠点全体を巡回させて自動回収する「全自動拠点システム」に発展させることができます。</p>
+<p>まずは一つの壁面を仕分け機にして、マイクラの拠点整理を自動化することから始めてみてください。一度作ってしまえば、もう二度とチェスト整理という面倒な作業に戻れなくなるはずです！</p>
+
+</div>
+</div>
+<div class="latest-box">
+
+<h2>最新記事</h2>
+
+<div id="latest-posts">
+読み込み中...
+</div>
+
+</div>
+
+<script src="/game/latest.js"></script>
+</body>
+</html>
