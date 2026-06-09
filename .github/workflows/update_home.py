@@ -177,6 +177,7 @@ html = f"""
 <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3571574988222927"crossorigin="anonymous"></script>
 <link rel="icon" type="image/png" href="/favicon.png">
 <link rel="apple-touch-icon" href="/favicon.png">
+<meta name="description" content="わかりやすい最新のニュースをまるっと掲載しているメディア">
 <style>
 body {{
     margin: 0;
