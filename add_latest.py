@@ -37,36 +37,42 @@ for root, dirs, files in os.walk(TARGET_DIR):
         with open(path, "r", encoding="utf-8") as f:
             html = f.read()
 
-        # 【ステップ1】すでに間違った位置に入ってしまったブロックがあれば一旦削除
-        # 前後に改行が含まれている場合を考慮して、ブロック単体を取り除く
+        # 【ステップ1】すでに間違った位置に入ってしまったブロックがあれば一旦削除してリセット
         if INSERT_BLOCK in html:
             html = html.replace(INSERT_BLOCK, "")
+            # 連続する不要な改行などもトリミング（必要に応じて）
+            html = html.replace("\n\n\n", "\n\n")
 
-        # 【ステップ2】「<h2>まとめ</h2>」の後の最初の「</p>」を探して、その直後に挿入する
+        # 【ステップ2】ターゲットの位置を特定する
         if "<h2>まとめ</h2>" in html:
-            # 「<h2>まとめ</h2>」の開始位置を見つける
+            # 「<h2>まとめ</h2>」の開始位置
             summary_idx = html.find("<h2>まとめ</h2>")
             
-            # その位置以降で、最初の「</p>」の位置を見つける
+            # 「<h2>まとめ</h2>」以降で、最初の「</p>」の位置
             p_close_idx = html.find("</p>", summary_idx)
             
             if p_close_idx != -1:
-                # 「</p>」の文字数（4文字）分進めた位置を挿入ポイントにする
-                insert_pos = p_close_idx + 4
+                # ターゲットの「</p>」より後ろで、最初の「</div>」の位置
+                div_close_idx = html.find("</div>", p_close_idx)
                 
-                # スライスを使って、</p> の直後にパーツを滑り込ませる
-                html = html[:insert_pos] + "\n\n" + INSERT_BLOCK + html[insert_pos:]
+                if div_close_idx != -1:
+                    # 見つかった 「</div>」 の直前に挿入する
+                    insert_pos = div_close_idx
+                    
+                    # 挿入ブロックを綺麗に配置（前後に改行を挟む）
+                    html = html[:insert_pos] + "\n" + INSERT_BLOCK + "\n" + html[insert_pos:]
+                else:
+                    # </p> の後に </div> が見つからない場合は安全のためスキップ
+                    continue
             else:
-                # 万が一 </p> が見つからない場合は安全のためスキップ
                 continue
         else:
-            # <h2>まとめ</h2> がない記事の場合はスキップ
             continue
 
         with open(path, "w", encoding="utf-8") as f:
             f.write(html)
 
         count += 1
-        print("fixed & updated:", path)
+        print("fixed & re-positioned:", path)
 
 print(f"完了: {count}件")
