@@ -105,57 +105,60 @@ def download_image(url, save_dir="images"):
     return None
 
 def get_news_image(article_url):
-    """ニュース記事のページを開き、メインのアイキャッチ画像を確実に抽出する"""
+    """Googleニュースの暗号化URLを追跡し、本物のサイトからメイン画像を抽出する"""
     try:
+        # ブラウザからのアクセスに見せかけるための設定
         headers = {
-            "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
+            "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
+            "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8",
+            "Accept-Language": "ja,en-US;q=0.7,en;q=0.3"
         }
-        # Googleニュースの転送URLから実際の記事URLを追跡して取得
-        res = requests.get(article_url, headers=headers, timeout=8, allow_redirects=True)
+        
+        # 1. まずGoogleニュースのリンクにアクセスし、本物のニュースサイトのURLへジャンプするのを待つ
+        session = requests.Session()
+        res = session.get(article_url, headers=headers, timeout=10, allow_redirects=True)
+        
+        # ジャンプした後の「本物のURL」を取得
         final_url = res.url
+        print("本物のニュースサイトURLに到達しました:", final_url)
         
+        # もしGoogleニュースの中に留まってしまっている場合は、もう一度中身を解析して外のリンクを探す
         soup = BeautifulSoup(res.text, "html.parser")
-        
-        # 対策①：最優先でSNS共有用の大型アイキャッチ画像（OGP）を探す
-        # ニュースサイトはほぼ100%このタグに一番大きなメイン画像を設定しています
+        if "news.google.com" in final_url:
+            a_tag = soup.find("a", rel="external nofollow") or soup.find("main").find("a") if soup.find("main") else None
+            if a_tag and a_tag.get("href"):
+                final_url = urllib.parse.urljoin(final_url, a_tag["href"])
+                res = session.get(final_url, headers=headers, timeout=10, allow_redirects=True)
+                soup = BeautifulSoup(res.text, "html.parser")
+                final_url = res.url
+
+        # 2. 本物のニュースサイトのHTMLから、最優先でSNS用の大型アイキャッチ画像（OGP）を狙い撃ち
         for property_name in ["og:image", "twitter:image", "thumbnail"]:
-            og_image = soup.find("meta", property=lambda x: x and property_name in x.lower())
+            og_image = soup.find("meta", property=lambda x: x and property_name in x.lower()) or \
+                       soup.find("meta", attrs={"name": lambda x: x and property_name in x.lower()})
             if og_image and og_image.get("content"):
-                img_url = og_image["content"]
-                # 絶対パス（httpから始まるURL）に変換
+                img_url = og_image["content"].strip()
                 img_url = urllib.parse.urljoin(final_url, img_url)
-                # アイコン等の不要なノイズ画像を除外するフィルター
-                if not any(x in img_url.lower() for x in ["favicon", "icon", "logo", "avatar", "sprite", "loader"]):
+                
+                # アイコンやロゴなどの不要なノイズ画像を弾くフィルター
+                if not any(x in img_url.lower() for x in ["favicon", "icon", "logo", "avatar", "sprite", "loader", "nav"]):
                     return img_url, final_url
 
-        # 対策②：メタタグにない場合、本文内（articleタグやmainタグの中）の大きな画像を探す
-        main_content = soup.find(["article", "main", "div", "section"], class_=lambda x: x and any(c in x.lower() for c in ["article", "post", "content", "entry", "main"]))
+        # 3. メタタグにない場合、本文を構成していそうなエリアから大きな画像を探す
+        main_content = soup.find(["article", "main", "div", "section"], class_=lambda x: x and any(c in x.lower() for c in ["article", "post", "content", "entry", "main", "body"]))
         target_soup = main_content if main_content else soup
 
         for img in target_soup.find_all("img"):
-            src = img.get("src") or img.get("data-src") or img.get("data-lazy-src")
+            src = img.get("src") or img.get("data-src") or img.get("data-lazy-src") or img.get("data-original")
             if src:
-                img_url = urllib.parse.urljoin(final_url, src)
-                # 画像のURLや拡張子、サイズ条件でノイズを徹底排除
-                if img_url.startswith("http") and not any(x in img_url.lower() for x in ["favicon", "icon", "logo", "avatar", "btn", "banner", "ad", "spacer"]):
-                    # 拡張子が画像データっぽいもの、または明らかなURLを優先
+                img_url = urllib.parse.urljoin(final_url, src).strip()
+                if img_url.startswith("http") and not any(x in img_url.lower() for x in ["favicon", "icon", "logo", "avatar", "btn", "banner", "ad", "spacer", "header", "footer"]):
                     if any(ext in img_url.lower() for ext in [".jpg", ".jpeg", ".png", ".webp"]) or "image" in img_url.lower():
                         return img_url, final_url
                 
     except Exception as e:
         print("ニュースサイトからの画像抽出エラー:", e)
     return None, article_url
-
-
-# 確定引用画像の取得処理
-remote_image_url, final_source_url = get_news_image(source_url)
-
-local_image_path = None
-if remote_image_url:
-    print("ニュースサイト内で画像を発見:", remote_image_url)
-    local_image_path = download_image(remote_image_url)
-else:
-    print("ニュースサイト内に画像が見つかりませんでした")
 
 
 # =====================
