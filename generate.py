@@ -179,7 +179,12 @@ body = body.replace("```html", "").replace("```", "")
 content = f"{clean_topic} {body}"
 category = get_category(content)
 
+image_url, final_source_url = get_news_image(source_url)
 
+local_image_path = None
+
+if image_url:
+    local_image_path = download_image(image_url)
 # =====================
 # HTML生成
 # =====================
