@@ -4,7 +4,7 @@ import re
 import time
 import hashlib
 import urllib.parse
-import subprocess  # ★Git操作を強制するために追加
+import subprocess
 from datetime import datetime
 from zoneinfo import ZoneInfo
 import feedparser
@@ -42,7 +42,7 @@ def generate_text(prompt):
 
 
 # =====================
-# RSS取得 ＆ ニュース元URLの解析
+# RSS取得 ＆ ニューステーマ決定
 # =====================
 cache_buster = int(time.time())
 rss_url = f"https://news.google.com/rss?hl=ja&gl=JP&ceid=JP:ja&_={cache_buster}"
@@ -54,14 +54,14 @@ if not feed.entries:
     source_url = "https://news.google.com/"
     source_name = "Googleニュース"
 else:
-    chosen_entry = random.choice(feed.entries[:10])
+    # 毎回違うニュースが選ばれやすいように範囲を広げる
+    chosen_entry = random.choice(feed.entries[:15])
     topic = chosen_entry.title
     clean_topic = topic.split(" - ")[0].split("｜")[0].strip()
     source_url = chosen_entry.link
     source_name = chosen_entry.get("source", {}).get("title", "ニュース配信元")
 
 print("選択されたテーマ:", clean_topic)
-print("Googleニュース内URL:", source_url)
 
 
 # =====================
@@ -78,66 +78,41 @@ def get_category(text):
 
 
 # =====================
-# 【ニュースサイト直撃】本物の記事写真を引っこ抜くシステム
+# 【Google回避・安全第一】画像検索から本物の関連写真をぶち抜く
 # =====================
-def get_news_image(article_url):
-    """Googleニュースの暗号URLを追跡し、本物の配信元サイトのメイン写真を抽出する"""
+def get_safe_search_image(query):
+    """ニュースタイトルから検索エンジン経由で本物の関連写真URLを取得する（Googleのブロックを完全回避）"""
     try:
+        # 検索ワードをエンコード
+        encoded_query = urllib.parse.quote(f"{query} ニュース")
+        search_url = f"https://www.bing.com/images/search?q={encoded_query}&qft=+filterui:aspect-square"
+        
         headers = {
-            "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
-            "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8"
+            "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
         }
-        
-        session = requests.Session()
-        res = session.get(article_url, headers=headers, timeout=10, allow_redirects=True)
-        final_url = res.url
-        
+        res = requests.get(search_url, headers=headers, timeout=10)
         soup = BeautifulSoup(res.text, "html.parser")
-        if "news.google.com" in final_url:
-            a_tag = soup.find("a", rel="external nofollow") or soup.find("main").find("a") if soup.find("main") else None
-            if a_tag and a_tag.get("href"):
-                final_url = urllib.parse.urljoin(final_url, a_tag["href"])
-                res = session.get(final_url, headers=headers, timeout=10, allow_redirects=True)
-                soup = BeautifulSoup(res.text, "html.parser")
-                final_url = res.url
-
-        print("到達した本物のニュースサイトURL:", final_url)
-
-        # OGP（SNS用のデカいメイン画像）を狙い撃ち
-        for property_name in ["og:image", "twitter:image", "thumbnail"]:
-            og_image = soup.find("meta", property=lambda x: x and property_name in x.lower()) or \
-                       soup.find("meta", attrs={"name": lambda x: x and property_name in x.lower()})
-            if og_image and og_image.get("content"):
-                img_url = og_image["content"].strip()
-                img_url = urllib.parse.urljoin(final_url, img_url)
-                
-                # ファビコンやロゴを完全に拒絶
-                if not any(x in img_url.lower() for x in ["favicon", "icon", "logo", "avatar", "sprite", "loader", "nav", "g-header"]):
-                    return img_url, final_url
-
-        # 本文エリアの最初の通常画像
-        main_content = soup.find(["article", "main", "div", "section"], class_=lambda x: x and any(c in x.lower() for c in ["article", "post", "content", "entry", "main", "body"]))
-        target_soup = main_content if main_content else soup
-
-        for img in target_soup.find_all("img"):
-            src = img.get("src") or img.get("data-src") or img.get("data-lazy-src") or img.get("data-original")
-            if src:
-                img_url = urllib.parse.urljoin(final_url, src).strip()
-                if img_url.startswith("http") and not any(x in img_url.lower() for x in ["favicon", "icon", "logo", "avatar", "btn", "banner", "ad", "spacer", "header", "footer"]):
-                    if any(ext in img_url.lower() for ext in [".jpg", ".jpeg", ".png", ".webp"]) or "image" in img_url.lower():
-                        return img_url, final_url
-                
+        
+        # 検索結果から画像のURL（mimgクラス）を抽出
+        for img in soup.find_all("img", class_="mimg"):
+            img_url = img.get("src") or img.get("data-src")
+            if img_url and img_url.startswith("http"):
+                # Google関連のアイコンやロゴ、ユーザーアイコンを徹底的に排除する強力なフィルター
+                if not any(x in img_url.lower() for x in ["favicon", "logo", "icon", "avatar", "sprite", "googleusercontent", "google"]):
+                    return img_url
+                    
     except Exception as e:
-        print("ニュースサイトからの画像抽出エラー:", e)
-    return None, article_url
+        print("画像検索スクレイピングエラー:", e)
+    return None
 
 def download_image(url, save_dir="images"):
-    """画像をimagesフォルダに物理保存する。毎回確実に違うファイル名を作る"""
+    """画像をimagesフォルダに保存する（URL文字列から固有のファイル名を作るため、もう二度と同じファイル名に固定されません）"""
     try:
         if not os.path.exists(save_dir):
             os.makedirs(save_dir)
 
         ext = "jpg"
+        # URLの文字列をハッシュ化。URLが変わればファイル名も絶対に変わります
         file_name = f"{hashlib.md5(url.encode()).hexdigest()}.{ext}"
         save_path = os.path.join(save_dir, file_name)
 
@@ -146,21 +121,25 @@ def download_image(url, save_dir="images"):
         if res.status_code == 200:
             with open(save_path, "wb") as f:
                 f.write(res.content)
-            print(f"画像を新規保存しました: {save_path}")
+            print(f"【成功】新画像を保存しました: {save_path}")
             return f"/{save_dir}/{file_name}"
     except Exception as e:
         print("画像のダウンロードに失敗しました:", e)
     return None
 
 
-# 画像取得処理を実行
-image_url, final_source_url = get_news_image(source_url)
+# ニュースのメディア名とタイトルを組み合わせて、安全に画像をWeb検索
+search_term = f"{source_name} {clean_topic}"
+print("画像検索キーワード:", search_term)
+
+image_url = get_safe_search_image(clean_topic)
 
 local_image_path = None
 if image_url:
-    print("本物のニュース写真を発見しました:", image_url)
+    print("Web上でニュースに関連する写真を発見しました:", image_url)
     local_image_path = download_image(image_url)
 
+# 万が一の保険（フリーイメージ）
 if not local_image_path:
     print("画像が取得できなかったため、一時的なイメージ画像を割り当てます。")
     seed_num = int(hashlib.md5(clean_topic.encode()).hexdigest(), 16) % 1000
@@ -188,7 +167,7 @@ category = get_category(content)
 
 
 # =====================
-# HTML生成（オリジナルデザイン完全維持）
+# HTML生成（デザイン完全維持）
 # =====================
 def build_html(title, body, category, local_image_path, source_url, source_name):
     image_html = ""
@@ -369,15 +348,14 @@ date = datetime.now(ZoneInfo("Asia/Tokyo")).strftime("%Y-%m-%d-%H%M%S")
 filename = f"posts/{category}/{date}.html"
 
 with open(filename, "w", encoding="utf-8") as f:
-    f.write(build_html(title, body, category, local_image_path, final_source_url, source_name))
+    f.write(build_html(title, body, category, local_image_path, source_url, source_name))
 
 print("記事生成完了:", title)
 
 
 # =====================
-# ★【最重要】新画像をGitHubに100%強制認識させるコマンド
+# GitHub強制追跡
 # =====================
 if local_image_path:
-    # Gitに対して、imagesフォルダに入った新しい画像を強制的に追跡リストに入れるよう命令します
     subprocess.run(["git", "add", "-f", "images/"], check=False)
     print("Gitに新画像の追跡を強制しました。")
