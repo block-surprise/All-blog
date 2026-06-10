@@ -359,3 +359,4 @@ print("記事生成完了:", title)
 if local_image_path:
     subprocess.run(["git", "add", "-f", "images/"], check=False)
     print("Gitに新画像の追跡を強制しました。")
+
