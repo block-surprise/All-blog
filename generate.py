@@ -54,7 +54,6 @@ if not feed.entries:
     source_url = "https://news.google.com/"
     source_name = "Googleニュース"
 else:
-    # 毎回違うニュースが選ばれやすいように範囲を広げる
     chosen_entry = random.choice(feed.entries[:15])
     topic = chosen_entry.title
     clean_topic = topic.split(" - ")[0].split("｜")[0].strip()
@@ -78,41 +77,46 @@ def get_category(text):
 
 
 # =====================
-# 【Google回避・安全第一】画像検索から本物の関連写真をぶち抜く
+# 【日本国内特化】画像検索システム
 # =====================
-def get_safe_search_image(query):
-    """ニュースタイトルから検索エンジン経由で本物の関連写真URLを取得する（Googleのブロックを完全回避）"""
+def get_japanese_search_image(query):
+    """海外サーバーからでも、日本国内向け（日本語・地域JP）のリアルな画像結果を強制取得する"""
     try:
-        # 検索ワードをエンコード
-        encoded_query = urllib.parse.quote(f"{query} ニュース")
-        search_url = f"https://www.bing.com/images/search?q={encoded_query}&qft=+filterui:aspect-square"
+        # 日本のニュース、商品画像がヒットしやすいようにキーワードを最適化
+        search_query = f"{query} ニュース"
+        encoded_query = urllib.parse.quote(search_query)
         
+        # ★重要: cc=JP（日本地域）と setlang=ja（日本語）をURLに付与して日本からの検索を擬似再現
+        search_url = f"https://www.bing.com/images/search?q={encoded_query}&cc=JP&setlang=ja&qft=+filterui:aspect-square"
+        
+        # 日本国内の一般的なブラウザからのアクセスに見せる
         headers = {
-            "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
+            "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
+            "Accept-Language": "ja,jp;q=0.9,en-US;q=0.8,en;q=0.7"
         }
+        
         res = requests.get(search_url, headers=headers, timeout=10)
         soup = BeautifulSoup(res.text, "html.parser")
         
-        # 検索結果から画像のURL（mimgクラス）を抽出
+        # 検索結果のメイン画像（mimg）からURLを抽出
         for img in soup.find_all("img", class_="mimg"):
             img_url = img.get("src") or img.get("data-src")
             if img_url and img_url.startswith("http"):
-                # Google関連のアイコンやロゴ、ユーザーアイコンを徹底的に排除する強力なフィルター
-                if not any(x in img_url.lower() for x in ["favicon", "logo", "icon", "avatar", "sprite", "googleusercontent", "google"]):
+                # Googleのロゴやシステムのアイコン、バナー等のノイズを徹底排除
+                if not any(x in img_url.lower() for x in ["favicon", "logo", "icon", "avatar", "sprite", "google", "button", "banner"]):
                     return img_url
                     
     except Exception as e:
-        print("画像検索スクレイピングエラー:", e)
+        print("日本向け画像検索エラー:", e)
     return None
 
 def download_image(url, save_dir="images"):
-    """画像をimagesフォルダに保存する（URL文字列から固有のファイル名を作るため、もう二度と同じファイル名に固定されません）"""
+    """画像をimagesフォルダに固有の名前で物理保存する"""
     try:
         if not os.path.exists(save_dir):
             os.makedirs(save_dir)
 
         ext = "jpg"
-        # URLの文字列をハッシュ化。URLが変わればファイル名も絶対に変わります
         file_name = f"{hashlib.md5(url.encode()).hexdigest()}.{ext}"
         save_path = os.path.join(save_dir, file_name)
 
@@ -121,25 +125,35 @@ def download_image(url, save_dir="images"):
         if res.status_code == 200:
             with open(save_path, "wb") as f:
                 f.write(res.content)
-            print(f"【成功】新画像を保存しました: {save_path}")
+            print(f"【成功】日本向け画像を保存しました: {save_path}")
             return f"/{save_dir}/{file_name}"
     except Exception as e:
         print("画像のダウンロードに失敗しました:", e)
     return None
 
 
-# ニュースのメディア名とタイトルを組み合わせて、安全に画像をWeb検索
-search_term = f"{source_name} {clean_topic}"
-print("画像検索キーワード:", search_term)
+# AIにニュースに一番関係のある「日本国内で検索されやすい具体的なキーワード」を1つだけ作ってもらう
+keyword_prompt = f"""
+ニューステーマ：{clean_topic}
 
-image_url = get_safe_search_image(clean_topic)
+このニュースに関する本物の写真を探すため、日本国内の画像検索に打ち込むのに最も適した「具体的な名詞や固有名詞」を1つだけ出力してください。
+おもちゃのような画像を防ぐため、製品名、企業名、具体的な事象の単語にしてください。
+余計な説明や記号、解説は一切禁止。単語のみ。
+"""
+search_keyword = generate_text(keyword_prompt) or clean_topic
+search_keyword = search_keyword.replace("「", "").replace("」", "").strip()
+
+print("AI生成日本向けキーワード:", search_keyword)
+
+# 日本国内向けフィルターをかけて画像を検索
+image_url = get_japanese_search_image(search_keyword)
 
 local_image_path = None
 if image_url:
-    print("Web上でニュースに関連する写真を発見しました:", image_url)
+    print("日本向け画像を発見しました:", image_url)
     local_image_path = download_image(image_url)
 
-# 万が一の保険（フリーイメージ）
+# 保険用のフリー素材（万が一画像検索が全滅した場合）
 if not local_image_path:
     print("画像が取得できなかったため、一時的なイメージ画像を割り当てます。")
     seed_num = int(hashlib.md5(clean_topic.encode()).hexdigest(), 16) % 1000
@@ -167,7 +181,7 @@ category = get_category(content)
 
 
 # =====================
-# HTML生成（デザイン完全維持）
+# HTML生成（オリジナルデザイン完全維持）
 # =====================
 def build_html(title, body, category, local_image_path, source_url, source_name):
     image_html = ""
@@ -359,4 +373,3 @@ print("記事生成完了:", title)
 if local_image_path:
     subprocess.run(["git", "add", "-f", "images/"], check=False)
     print("Gitに新画像の追跡を強制しました。")
-
