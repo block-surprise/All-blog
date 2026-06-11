@@ -79,22 +79,17 @@ articles = []
 # =====================
 def get_random_image():
     try:
-        files = [
-            f for f in os.listdir(IMAGE_DIR)
-            if f.lower().endswith((".png", ".jpg", ".jpeg", ".webp"))
+        images = [
+            "a.jpeg",
+            "b.jpeg",
+            "c.png",
+            "d.png"
         ]
 
-        if not files:
-            return None
-
-        return "/" + IMAGE_DIR + "/" + random.choice(files)
+        return "/" + IMAGE_DIR + "/" + random.choice(images)
 
     except:
         return None
-
-
-image_url = get_random_image()
-
 
 # =====================
 # タイトル生成
