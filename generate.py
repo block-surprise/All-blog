@@ -77,37 +77,41 @@ def get_category(text):
 
 
 # =====================
-# 【日本国内特化】画像検索システム
+# 【日本国内サイト限定】実際の記事画像を取得するシステム（引用ベース）
 # =====================
-def get_japanese_search_image(query):
-    """海外サーバーからでも、日本国内向け（日本語・地域JP）のリアルな画像結果を強制取得する"""
+def get_actual_news_image(query, media_name):
+    """勝手な英語翻訳を阻止し、日本国内(.jp)のサイトから本物の写真だけを強制抽出する"""
     try:
-        # 日本のニュース、商品画像がヒットしやすいようにキーワードを最適化
-        search_query = f"{query} ニュース"
+        # メディア名やキーワードを「""」で囲み、末尾に site:jp をつけて日本国内サイトに完全固定
+        search_query = f'"{media_name}" "{query}" site:jp'
         encoded_query = urllib.parse.quote(search_query)
         
-        # ★重要: cc=JP（日本地域）と setlang=ja（日本語）をURLに付与して日本からの検索を擬似再現
-        search_url = f"https://www.bing.com/images/search?q={encoded_query}&cc=JP&setlang=ja&qft=+filterui:aspect-square"
+        # 日本地域（cc=JP）、言語（setlang=ja）に加えて、完全に日本語での検索結果を要求
+        search_url = f"https://www.bing.com/images/search?q={encoded_query}&cc=JP&setlang=ja"
         
-        # 日本国内の一般的なブラウザからのアクセスに見せる
         headers = {
             "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
-            "Accept-Language": "ja,jp;q=0.9,en-US;q=0.8,en;q=0.7"
+            "Accept-Language": "ja,jp;q=0.9"
         }
         
         res = requests.get(search_url, headers=headers, timeout=10)
         soup = BeautifulSoup(res.text, "html.parser")
         
-        # 検索結果のメイン画像（mimg）からURLを抽出
+        # 検索結果の画像URLを検証
         for img in soup.find_all("img", class_="mimg"):
             img_url = img.get("src") or img.get("data-src")
             if img_url and img_url.startswith("http"):
-                # Googleのロゴやシステムのアイコン、バナー等のノイズを徹底排除
+                # ロゴやアイコン、極端に小さいシステム用画像（バナー広告等）は除外
                 if not any(x in img_url.lower() for x in ["favicon", "logo", "icon", "avatar", "sprite", "google", "button", "banner"]):
+                    # 縦長すぎる、横長すぎる広告枠を弾くため、サイズパラメータを調整（高画質化）
+                    if "w=" in img_url:
+                        img_url = re.sub(r'w=\d+', 'w=800', img_url)
+                    if "h=" in img_url:
+                        img_url = re.sub(r'h=\d+', 'h=500', img_url)
                     return img_url
                     
     except Exception as e:
-        print("日本向け画像検索エラー:", e)
+        print("ニュース画像取得エラー:", e)
     return None
 
 def download_image(url, save_dir="images"):
@@ -125,37 +129,24 @@ def download_image(url, save_dir="images"):
         if res.status_code == 200:
             with open(save_path, "wb") as f:
                 f.write(res.content)
-            print(f"【成功】日本向け画像を保存しました: {save_path}")
+            print(f"【成功】実際のニュース画像（引用）を保存しました: {save_path}")
             return f"/{save_dir}/{file_name}"
     except Exception as e:
         print("画像のダウンロードに失敗しました:", e)
     return None
 
 
-# AIにニュースに一番関係のある「日本国内で検索されやすい具体的なキーワード」を1つだけ作ってもらう
-keyword_prompt = f"""
-ニューステーマ：{clean_topic}
-
-このニュースに関する本物の写真を探すため、日本国内の画像検索に打ち込むのに最も適した「具体的な名詞や固有名詞」を1つだけ出力してください。
-おもちゃのような画像を防ぐため、製品名、企業名、具体的な事象の単語にしてください。
-余計な説明や記号、解説は一切禁止。単語のみ。
-"""
-search_keyword = generate_text(keyword_prompt) or clean_topic
-search_keyword = search_keyword.replace("「", "").replace("」", "").strip()
-
-print("AI生成日本向けキーワード:", search_keyword)
-
-# 日本国内向けフィルターをかけて画像を検索
-image_url = get_japanese_search_image(search_keyword)
+# 実際のニュース画像を日本国内サイトから検索してダウンロード
+print(f"画像検索対象（国内限定）: {source_name} {clean_topic}")
+image_url = get_actual_news_image(clean_topic, source_name)
 
 local_image_path = None
 if image_url:
-    print("日本向け画像を発見しました:", image_url)
+    print("本物の国内ニュース画像URLを発見:", image_url)
     local_image_path = download_image(image_url)
 
-# 保険用のフリー素材（万が一画像検索が全滅した場合）
 if not local_image_path:
-    print("画像が取得できなかったため、一時的なイメージ画像を割り当てます。")
+    print("国内画像が直接取得できなかったため、予備のイメージ画像を割り当てます。")
     seed_num = int(hashlib.md5(clean_topic.encode()).hexdigest(), 16) % 1000
     image_url = f"https://picsum.photos/seed/{seed_num}/800/500"
     local_image_path = download_image(image_url)
@@ -170,18 +161,30 @@ title = title.replace("\n", "")
 
 
 # =====================
-# 本文生成（HTML）
+# 本文生成（HTML）＋ AI暴走タグの超強力ブロック
 # =====================
-body_prompt = f"あなたはプロのテックメディア編集者です。\nテーマ：{clean_topic}\n以下をHTMLで書いてください：\n<h2>概要</h2>\n<p></p>\n<h2>背景</h2>\n<p></p>\n<h2>詳細解説</h2>\n<p></p>\n<h2>具体例</h2>\n<p></p>\n<h2>今後の影響</h2>\n<p></p>\n<h2>まとめ</h2>\n<p>3行で簡潔に</p>\n条件：\n- 1500〜3500文字\n- HTMLのみ\n- ```禁止"
+body_prompt = f"あなたはプロのテックメディア編集者です。\nテーマ：{clean_topic}\n以下をHTMLで書いてください：\n<h2>概要</h2>\n<p></p>\n<h2>背景</h2>\n<p></p>\n<h2>詳細解説</h2>\n<p></p>\n<h2>具体例</h2>\n<p></p>\n<h2>今後の影響</h2>\n<p></p>\n<h2>まとめ</h2>\n<p>3行で簡潔に</p>\n条件：\n- 1500〜3500文字\n- 渡された見出し（h2, pタグ）のみで本文を構成すること\n- htmlタグ、headタグ、bodyタグ、styleタグ、scriptタグの出力は絶対に禁止（デザインが破壊されるため）\n- ```によるコードブロック囲みも禁止"
+
 body = generate_text(body_prompt) or ""
+
+# ★【AI暴走対策・強力クレンジングシステム】
 body = body.replace("```html", "").replace("```", "")
+body = re.sub(r'<!DOCTYPE.*?>', '', body, flags=re.IGNORECASE | re.DOTALL)
+body = re.sub(r'<html.*?>', '', body, flags=re.IGNORECASE | re.DOTALL)
+body = re.sub(r'</html>', '', body, flags=re.IGNORECASE)
+body = re.sub(r'<head.*?>.*?</head>', '', body, flags=re.IGNORECASE | re.DOTALL)
+body = re.sub(r'<body.*?>', '', body, flags=re.IGNORECASE)
+body = re.sub(r'</body>', '', body, flags=re.IGNORECASE)
+body = re.sub(r'<style.*?>.*?</style>', '', body, flags=re.IGNORECASE | re.DOTALL)
+body = re.sub(r'<script.*?>.*?</script>', '', body, flags=re.IGNORECASE | re.DOTALL)
+body = body.strip()
 
 content = f"{clean_topic} {body}"
 category = get_category(content)
 
 
 # =====================
-# HTML生成（オリジナルデザイン完全維持）
+# HTML生成（オリジナルデザイン完全維持 ＋ クリーンな本文の埋め込み）
 # =====================
 def build_html(title, body, category, local_image_path, source_url, source_name):
     image_html = ""
