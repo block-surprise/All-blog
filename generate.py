@@ -2,14 +2,10 @@ import os
 import random
 import re
 import time
-import hashlib
-import urllib.parse
 import subprocess
 from datetime import datetime
 from zoneinfo import ZoneInfo
 import feedparser
-import requests
-from bs4 import BeautifulSoup
 import google.generativeai as genai
 
 # =====================
@@ -51,14 +47,10 @@ feed = feedparser.parse(rss_url)
 if not feed.entries:
     chosen_entry = None
     clean_topic = "最新テックニュース"
-    source_url = "https://news.google.com/"
-    source_name = "Googleニュース"
 else:
     chosen_entry = random.choice(feed.entries[:15])
     topic = chosen_entry.title
     clean_topic = topic.split(" - ")[0].split("｜")[0].strip()
-    source_url = chosen_entry.link
-    source_name = chosen_entry.get("source", {}).get("title", "ニュース配信元")
 
 print("選択されたテーマ:", clean_topic)
 
@@ -74,82 +66,6 @@ def get_category(text):
         return "gadgets"
     else:
         return "news"
-
-
-# =====================
-# 【日本国内サイト限定】実際の記事画像を取得するシステム（引用ベース）
-# =====================
-def get_actual_news_image(query, media_name):
-    """勝手な英語翻訳を阻止し、日本国内(.jp)のサイトから本物の写真だけを強制抽出する"""
-    try:
-        # メディア名やキーワードを「""」で囲み、末尾に site:jp をつけて日本国内サイトに完全固定
-        search_query = f'"{media_name}" "{query}" site:jp'
-        encoded_query = urllib.parse.quote(search_query)
-        
-        # 日本地域（cc=JP）、言語（setlang=ja）に加えて、完全に日本語での検索結果を要求
-        search_url = f"https://www.bing.com/images/search?q={encoded_query}&cc=JP&setlang=ja"
-        
-        headers = {
-            "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
-            "Accept-Language": "ja,jp;q=0.9"
-        }
-        
-        res = requests.get(search_url, headers=headers, timeout=10)
-        soup = BeautifulSoup(res.text, "html.parser")
-        
-        # 検索結果の画像URLを検証
-        for img in soup.find_all("img", class_="mimg"):
-            img_url = img.get("src") or img.get("data-src")
-            if img_url and img_url.startswith("http"):
-                # ロゴやアイコン、極端に小さいシステム用画像（バナー広告等）は除外
-                if not any(x in img_url.lower() for x in ["favicon", "logo", "icon", "avatar", "sprite", "google", "button", "banner"]):
-                    # 縦長すぎる、横長すぎる広告枠を弾くため、サイズパラメータを調整（高画質化）
-                    if "w=" in img_url:
-                        img_url = re.sub(r'w=\d+', 'w=800', img_url)
-                    if "h=" in img_url:
-                        img_url = re.sub(r'h=\d+', 'h=500', img_url)
-                    return img_url
-                    
-    except Exception as e:
-        print("ニュース画像取得エラー:", e)
-    return None
-
-def download_image(url, save_dir="images"):
-    """画像をimagesフォルダに固有の名前で物理保存する"""
-    try:
-        if not os.path.exists(save_dir):
-            os.makedirs(save_dir)
-
-        ext = "jpg"
-        file_name = f"{hashlib.md5(url.encode()).hexdigest()}.{ext}"
-        save_path = os.path.join(save_dir, file_name)
-
-        headers = {"User-Agent": "Mozilla/5.0"}
-        res = requests.get(url, headers=headers, timeout=10)
-        if res.status_code == 200:
-            with open(save_path, "wb") as f:
-                f.write(res.content)
-            print(f"【成功】実際のニュース画像（引用）を保存しました: {save_path}")
-            return f"/{save_dir}/{file_name}"
-    except Exception as e:
-        print("画像のダウンロードに失敗しました:", e)
-    return None
-
-
-# 実際のニュース画像を日本国内サイトから検索してダウンロード
-print(f"画像検索対象（国内限定）: {source_name} {clean_topic}")
-image_url = get_actual_news_image(clean_topic, source_name)
-
-local_image_path = None
-if image_url:
-    print("本物の国内ニュース画像URLを発見:", image_url)
-    local_image_path = download_image(image_url)
-
-if not local_image_path:
-    print("国内画像が直接取得できなかったため、予備のイメージ画像を割り当てます。")
-    seed_num = int(hashlib.md5(clean_topic.encode()).hexdigest(), 16) % 1000
-    image_url = f"https://picsum.photos/seed/{seed_num}/800/500"
-    local_image_path = download_image(image_url)
 
 
 # =====================
@@ -184,18 +100,9 @@ category = get_category(content)
 
 
 # =====================
-# HTML生成（オリジナルデザイン完全維持 ＋ クリーンな本文の埋め込み）
+# HTML生成（オリジナルデザイン完全維持 ＋ 画像・出典枠カット版）
 # =====================
-def build_html(title, body, category, local_image_path, source_url, source_name):
-    image_html = ""
-    if local_image_path:
-        image_html = f'''
-<img src="{local_image_path}" alt="{title}" loading="lazy">
-<p style="text-align: center; font-size: 12px; color: #666; margin: 4px 0 20px 0;">
-  出典：<a href="{source_url}" target="_blank" rel="noopener" style="color: #666; text-decoration: underline;">{source_name}</a>
-</p>
-'''
-
+def build_html(title, body, category):
     return f"""
 <!DOCTYPE html>
 <html lang="ja">
@@ -263,11 +170,6 @@ header {{
     box-shadow: 0 6px 18px rgba(0,0,0,0.06);
 }}
 
-.article img {{
-    width: 100%;
-    border-radius: 12px;
-}}
-
 .category {{
     display: inline-block;
     font-size: 12px;
@@ -316,8 +218,6 @@ h2 {{
 <div class="container">
 <div class="article">
 
-{image_html}
-
 <div class="category">{category}</div>
 
 <h1>{title}</h1>
@@ -365,14 +265,6 @@ date = datetime.now(ZoneInfo("Asia/Tokyo")).strftime("%Y-%m-%d-%H%M%S")
 filename = f"posts/{category}/{date}.html"
 
 with open(filename, "w", encoding="utf-8") as f:
-    f.write(build_html(title, body, category, local_image_path, source_url, source_name))
+    f.write(build_html(title, body, category))
 
 print("記事生成完了:", title)
-
-
-# =====================
-# GitHub強制追跡
-# =====================
-if local_image_path:
-    subprocess.run(["git", "add", "-f", "images/"], check=False)
-    print("Gitに新画像の追跡を強制しました。")
