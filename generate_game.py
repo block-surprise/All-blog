@@ -100,6 +100,11 @@ title_prompt = f"""
 テーマ：{clean_topic}
 
 30文字以内でクリックされるタイトルを1つだけ出してください。
+
+条件：
+- タイトル以外の文字を置かない
+- (何文字)などはいれない
+- 記号は使わない
 """
 
 title = generate_text(title_prompt)
