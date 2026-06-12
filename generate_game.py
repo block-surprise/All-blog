@@ -90,7 +90,7 @@ def get_random_image():
 
     except:
         return None
-
+image_url = get_random_image()
 # =====================
 # タイトル生成
 # =====================
