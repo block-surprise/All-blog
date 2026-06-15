@@ -328,7 +328,9 @@ h2 {{
 
 <body>
 
-<header>ひとりゲームニュース</header>
+<header>
+  <a href="https://htn-news.f5.si/game/">ひとりゲームニュース</a>
+</header>
 
 <div class="container">
 <div class="article">
