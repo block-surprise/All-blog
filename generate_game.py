@@ -127,6 +127,7 @@ section_prompt = f"""
 - 内容に自然に合う構成
 - ランキングならランキング構成
 - 攻略なら手順構成
+- 改行するべきところでは改行すること
 """
 sections = generate_text(section_prompt)
 
