@@ -240,8 +240,8 @@ header {{
     text-align: center;
 }}
 header a {{
-    color: white;           /* 文字色を白にする */
-    text-decoration: none;  /* 下線を消す */
+    color: white;           
+    text-decoration: none;  
 }}
 
 
