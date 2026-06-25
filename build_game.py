@@ -331,6 +331,7 @@ header h1 {{
 <footer class="footer">
 
   <a href="https://htn-news.f5.si/privacy.html">プライバシーポリシー</a>
+  <a href="https://htn-news.f5.si/a10">不適切な内容等削除申請フォーム</a>
 </footer>
 </body>
 </html>
