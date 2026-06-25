@@ -201,6 +201,21 @@ h2 {{
     font-size: 14px;
     margin: 4px 0;
 }}
+.footer {{
+    text-align: center;
+    padding: 20px;
+    font-size: 13px;
+    color: #666;
+}}
+
+.footer a {{
+    color: #666;
+    text-decoration: none;
+}}
+
+.footer a:hover {{
+    text-decoration: underline;
+}}
 </style>
 </head>
 
@@ -250,7 +265,11 @@ h2 {{
 </div>
 </div>
 </div>
+ <footer class="footer">
 
+  <a href="https://htn-news.f5.si/privacy.html">・プライバシーポリシー</a>
+  <a href="https://htn-news.f5.si/a10">・不適切な内容等削除申請フォーム</a>
+</footer>
 </body>
 </html>
 """
