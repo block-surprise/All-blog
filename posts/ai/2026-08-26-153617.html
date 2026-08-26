@@ -1,0 +1,192 @@
+
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DDoS猛威：ルーター乗っ取りでインフラ機能不全</title>
+<script async src="[https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3571574988222927](https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3571574988222927)" crossorigin="anonymous"></script>
+<link rel="icon" type="image/png" href="/favicon.png">
+<link rel="apple-touch-icon" href="/favicon.png">
+<style>
+body {
+    margin: 0;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    background: #f4f6f8;
+    color: #111;
+    line-height: 1.8;
+}
+
+header {
+    background: white;
+    padding: 16px;
+    border-bottom: 1px solid #eee;
+    font-weight: bold;
+}
+
+.nav {
+    background: #111;
+    padding: 12px 18px;
+    display: flex;
+    gap: 14px;
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    align-items: center;
+    overflow-x: auto;
+}
+
+.nav a {
+    color: white;
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 600;
+    opacity: 0.85;
+    padding: 6px 10px;
+    border-radius: 8px;
+    white-space: nowrap;
+}
+
+.nav a:hover {
+    opacity: 1;
+    background: rgba(255,255,255,0.12);
+}
+
+.container {
+    max-width: 780px;
+    margin: auto;
+    padding: 14px;
+}
+
+.article {
+    background: white;
+    padding: 18px;
+    border-radius: 14px;
+    box-shadow: 0 6px 18px rgba(0,0,0,0.06);
+}
+
+.category {
+    display: inline-block;
+    font-size: 12px;
+    padding: 4px 10px;
+    border-radius: 999px;
+    background: #eef2ff;
+    color: #4f46e5;
+    margin: 10px 0;
+}
+
+h2 {
+    border-left: 4px solid #4f46e5;
+    padding-left: 10px;
+    font-size: 18px;
+    margin-top: 26px;
+}
+
+.related {
+    margin-top: 30px;
+    padding: 14px;
+    background: #f9fafb;
+    border-radius: 12px;
+}
+
+.related a {
+    display: block;
+    color: #4f46e5;
+    text-decoration: none;
+    font-size: 14px;
+    margin: 4px 0;
+}
+.footer {
+    text-align: center;
+    padding: 20px;
+    font-size: 13px;
+    color: #666;
+}
+
+.footer a {
+    color: #666;
+    text-decoration: none;
+}
+
+.footer a:hover {
+    text-decoration: underline;
+}
+</style>
+</head>
+
+<body>
+
+<header>ひとりテックニュース</header>
+
+<nav class="nav">
+  <a href="/index.html">ホーム</a>
+  <a href="/posts/ai/">AI</a>
+  <a href="/posts/gadgets/">ガジェット</a>
+  <a href="/posts/news/">ニュース</a>
+</nav>
+
+<div class="container">
+<div class="article">
+
+<div class="category">ai</div>
+
+<h1>DDoS猛威：ルーター乗っ取りでインフラ機能不全</h1>
+
+<h2>概要</h2>
+<p>DDoS（分散型サービス拒否）攻撃の脅威が、新たなフェーズへと移行しています。従来のような単純なサーバーへの大量アクセスではなく、IoT機器や家庭用ルーター、ネットワーク機器を乗っ取り、「ボットネット（Botnet）」として組織化する手法が主流となっています。これにより、攻撃力はかつてない規模に膨れ上がっており、企業や公的機関のWebサイトだけでなく、社会インフラそのものを停止させるリスクが現実味を帯びています。</p>
+
+<h2>背景</h2>
+<p>DDoS攻撃が急増している背景には、インターネットに接続される機器（IoT機器）の爆発的な普及と、それらのセキュリティ対策の脆弱さがあります。警察庁の「サイバー空間をめぐる脅威の情勢等」によれば、近年の攻撃は、インターネット経由でアクセス可能なサーバーだけでなく、ルーターやWebカメラ、スマート家電などのIoT機器が標的となるケースが急増しています。これら多くの機器は、出荷時のパスワード設定が変更されていなかったり、ファームウェアのアップデートが行われず脆弱性が放置されていたりするため、攻撃者にとって格好の「踏み台」として悪用されやすい状態にあります（出典：警察庁）。</p>
+
+<h2>詳細解説</h2>
+<p>ボットネットによる攻撃は、司令塔となるC&Cサーバーからの指示を受け、世界中に分散した数千から数百万台の感染端末が一斉に標的へ通信を送ることで成立します。これにより、標的側のネットワーク帯域や処理能力を飽和させ、サービスをダウンさせます。総務省の資料によれば、近年では通信の送信元IPアドレスを偽装する「スプーフィング」や、反射増幅攻撃（アンプ攻撃）といった手法が組み合わされており、防御側が特定のIPアドレスを遮断するだけでは対応困難な状況にあります。攻撃の規模を測る「最大トラフィック量」は年々更新されており、Tbps（テラビット毎秒）クラスの攻撃も観測されています。また、攻撃者がボットネットを構築・利用する権利を売買する「DDoS-as-a-Service」の普及により、専門知識を持たない攻撃者でも極めて強力な攻撃を実行可能になっている点も、脅威を増大させる要因となっています（出典：総務省、独立行政法人情報処理推進機構/IPA）。</p>
+
+<h2>具体例</h2>
+<p>過去の事例として最も象徴的なのが、2016年に発生した「Mirai」による攻撃です。このマルウェアは、デフォルトパスワードで運用されていた大量のルーターや監視カメラに感染し、当時世界最大級のDNSプロバイダーであったDyn社をダウンさせました。これにより、TwitterやNetflix、GitHubといった主要サービスが北米を中心に利用不能となりました。日本国内においても、IPAが公開する「情報セキュリティ白書」にて、特定の大学や金融機関を狙った長時間のDDoS攻撃が報告されており、これらは特定の業務停止だけでなく、ネットワークインフラ全体の遅延や他システムへの二次被害を誘発する恐れがあることが指摘されています（出典：独立行政法人情報処理推進機構/IPA）。</p>
+
+<h2>今後の影響</h2>
+<p>今後、IoT機器のさらなる普及に伴い、ボットネットの規模はさらに拡大することが予測されます。特にスマートシティ構想などで重要インフラがオンライン化される中、DDoS攻撃が電力供給や交通制御、通信網といった「社会の基盤」を直撃した場合、物理的な被害や人命に関わる機能不全を引き起こすリスクが懸念されます。現在、各組織ではクラウド型DDoS防御サービスや、トラフィックの異常をリアルタイムで検知するAI監視システムの導入が進んでいますが、攻撃手法も自動化・複雑化しており、防御側の技術競争は今後も続く見通しです（出典：総務省 情報通信白書）。</p>
+
+<p>主要な情報源：</p>
+<p><a href="https://www.npa.go.jp/publications/statistics/cybersecurity/index.html">警察庁：サイバー空間をめぐる脅威の情勢等</a></p>
+<p><a href="https://www.soumu.go.jp/johotsusintokei/whitepaper/index.html">総務省：情報通信白書</a></p>
+<p><a href="https://www.ipa.go.jp/security/publish/index.html">独立行政法人情報処理推進機構 (IPA)：情報セキュリティ関連資料</a></p>
+
+<h2>まとめ</h2>
+<p>IoT機器の脆弱性を狙った大規模ボットネットの脅威が急速に高まっています。
+防御側の技術も向上していますが、攻撃の自動化により社会インフラが停止するリスクは無視できません。
+機器のパスワード管理や最新ファームウェアへの更新といった、個別のセキュリティ対策がこれまで以上に不可欠です。</p>
+
+<div style="margin-top: 40px; padding: 24px; background: #fafafa; border: 1px solid #e5e7eb; border-radius: 12px; display: flex; flex-direction: column; gap: 16px;">
+  
+  <div style="font-size: 11px; color: #4f46e5; font-weight: bold; letter-spacing: 0.05em; text-transform: uppercase;">
+    この記事を書いた人
+  </div>
+
+  <div style="display: flex; align-items: center; gap: 16px; flex-wrap: wrap;">
+    <img src="/images/p/001.png" alt="管理人" style="width: 60px; height: 60px; border-radius: 50%; object-fit: cover; background: #e5e7eb;">
+    
+    <div style="flex: 1; min-width: 200px;">
+      <div style="font-size: 16px; font-weight: bold; color: #111; margin-bottom: 4px;">管理人</div>
+      <div style="font-size: 13px; color: #4b5563; line-height: 1.5;">
+        普段はウェブページ制作等を行なっています。
+      </div>
+    </div>
+  </div>
+  
+  <div style="display: flex; justify-content: flex-end; margin-top: 4px;">
+    <a href="/profile.html" style="display: inline-block; font-size: 13px; color: white; background: #4f46e5; text-decoration: none; padding: 8px 20px; border-radius: 8px; font-weight: bold; white-space: nowrap; transition: background 0.2s;">
+      詳細を見る
+    </a>
+  </div>
+
+</div>
+</div>
+</div>
+ <footer class="footer">
+
+  <a href="https://htn-news.f5.si/privacy.html">・プライバシーポリシー</a>
+  <a href="https://htn-news.f5.si/a10">・不適切な内容等削除申請フォーム</a>
+</footer>
+</body>
+</html>
