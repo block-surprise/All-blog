@@ -364,10 +364,10 @@ header h1 {{
 <div class="container">
 
 {cards}
+</div>
 <!-- admax -->
 <script src="https://adm.shinobi.jp/s/012674ab9d4e693c4563ac57d4159754"></script>
 <!-- admax -->
-</div>
 <div class="categories">
   <a href="/posts/ai/">AIニュース</a>
   <a href="/posts/gadgets/">ガジェット</a>
