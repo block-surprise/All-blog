@@ -58,6 +58,7 @@ SEOで読まれるブログテーマを1つだけ作ってください。
 - 具体的でクリックされやすい
 - 1行のみ
 - 記号は使わない
+- 他の人が書かないようなこと
 """
 
 clean_topic = generate_text(topic_prompt)
@@ -352,7 +353,9 @@ h2 {{
 <header>
   <a href="https://htn-news.f5.si/game/">ひとりゲームニュース</a>
 </header>
-
+<!-- admax -->
+<script src="https://adm.shinobi.jp/s/012674ab9d4e693c4563ac57d4159754"></script>
+<!-- admax -->
 <div class="container">
 <div class="article">
 
@@ -366,6 +369,9 @@ h2 {{
 
 </div>
 </div>
+<!-- admax -->
+<script src="https://adm.shinobi.jp/s/012674ab9d4e693c4563ac57d4159754"></script>
+<!-- admax -->
 <div class="latest-box">
 
 <h2>最新記事</h2>
@@ -375,7 +381,9 @@ h2 {{
 </div>
 
 </div>
-
+<!-- admax -->
+<script src="https://adm.shinobi.jp/s/012674ab9d4e693c4563ac57d4159754"></script>
+<!-- admax -->
 <script src="/game/latest.js"></script>
  <footer class="footer">
 
