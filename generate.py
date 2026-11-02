@@ -260,7 +260,9 @@ h2 {{
   <a href="/posts/gadgets/">ガジェット</a>
   <a href="/posts/news/">ニュース</a>
 </nav>
-
+<!-- admax -->
+<script src="https://adm.shinobi.jp/s/012674ab9d4e693c4563ac57d4159754"></script>
+<!-- admax -->
 <div class="container">
 <div class="article">
 
